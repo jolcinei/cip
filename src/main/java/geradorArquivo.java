@@ -147,7 +147,7 @@ public class geradorArquivo extends JFrame {
 
         generateXMLFile(arquivo, tipo.getCodigo(), sequencia);
         //Faz a leitura de um arquivo XML modelo.
-        Arquivo retornoXML = lerArquivoXML027("D:\\Projetos\\Webtik\\CIP\\ASLC027\\Sucesso\\ASLC027_11111111_20170522_00001_RET.xml");
+        Arquivo retornoXML = lerArquivoXML027RET("D:\\Projetos\\Webtik\\CIP\\ASLC027\\Sucesso\\ASLC027_11111111_20170522_00001_RET.xml");
         //Imprime o resultado na tela.
         resultadoArquivoXML(retornoXML);
     }
@@ -166,7 +166,7 @@ public class geradorArquivo extends JFrame {
                 String part = partes[0];
 
                 if (part.contains("027")) {
-                    arq = lerArquivoXML027(file.getAbsolutePath());
+                    arq = lerArquivoXML027RET(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC027);
                 } else if (part.contains("029")) {
                     arq = lerArquivoXML029RET(file.getAbsolutePath());
@@ -180,6 +180,9 @@ public class geradorArquivo extends JFrame {
                 } else if (part.contains("028")) {
                     arq = lerArquivoXML028(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC028);
+                } else if (part.contains("030")) {
+                    arq = lerArquivoXML030(file.getAbsolutePath());
+                    arq.setServicosEventos(EnumServicosEventos.ASLC030);
                 }
 
                 final String resultadoArquivoXML = resultadoArquivoXML(arq);
@@ -195,8 +198,8 @@ public class geradorArquivo extends JFrame {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC027">
-    public static Arquivo lerArquivoXML027(String absolutePath) {
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC027RET">
+    public static Arquivo lerArquivoXML027RET(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
         EnumTipoRetornado tipoRetornado = EnumTipoRetornado.ACTO;
@@ -4053,6 +4056,117 @@ public class geradorArquivo extends JFrame {
                 }
             }
             NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC028_LiquidTranscCred");
+
+            int tamanho = nodeListLiq.getLength();
+
+            for (int i = 0; i < tamanho; i++) {
+                Node noCred = nodeListLiq.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentPartAdmtd":
+                                    cred.setIdentPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    cred.setIdentPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "NULiquid":
+                                    cred.setNULiquid(elFilho.getTextContent());
+                                    break;
+                                case "CodOcorc":
+                                    cred.setCodOcorc(elFilho.getTextContent());
+                                    break;
+
+                                case "DtHrManut":
+                                    String dataManut = elFilho.getTextContent();
+                                    String[] dates = dataManut.split("T");
+                                    String part = dates[0];
+                                    String part2 = dates[1];
+                                    org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                                    DateTime dt = formatter.parseDateTime(part + " " + part2);
+                                    cred.setDtHrManut(dt);
+                                    break;
+                            }
+                            //ToDo
+                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        arquivoret.setCredenciador(cred);
+
+        return arquivoret;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC028 SLC --> Credenciador">
+    public static Arquivo lerArquivoXML030(String absolutePath) {
+        Arquivo arquivoret = new Arquivo();
+        Credenciador cred = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(absolutePath);
+
+            NodeList cabecalho = doc.getElementsByTagName("BCARQ");
+
+            int tamanhoCabecalho = cabecalho.getLength();
+
+            for (int a = 0; a < tamanhoCabecalho; a++) {
+                Node nodeCabecalho = cabecalho.item(a);
+                if (nodeCabecalho.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList itensCabecalho = nodeCabecalho.getChildNodes();
+                    int tamanhoFilhosCabecalho = itensCabecalho.getLength();
+                    for (int b = 0; b < tamanhoFilhosCabecalho; b++) {
+                        Node noCabFilho = itensCabecalho.item(b);
+
+                        if (noCabFilho.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elCabFilho = (Element) noCabFilho;
+
+                            switch (elCabFilho.getTagName()) {
+                                case "NomArq":
+                                    arquivoret.setNomArq(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlEmis":
+                                    arquivoret.setNumCtrlEmis(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlDestOr":
+                                    arquivoret.setNumCtrlDestOr(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBEmissor":
+                                    arquivoret.setISPBEmissor(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBDestinatario":
+                                    arquivoret.setISPBDestinatario(elCabFilho.getTextContent());
+                                    break;
+                                case "DtHrArq":
+                                    arquivoret.setDtHrArq(elCabFilho.getTextContent());
+                                    break;
+                                case "DtRef":
+                                    arquivoret.setDtRef(elCabFilho.getTextContent());
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC030_LiquidTranscDeb");
 
             int tamanho = nodeListLiq.getLength();
 
