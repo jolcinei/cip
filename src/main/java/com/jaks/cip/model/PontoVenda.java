@@ -54,6 +54,10 @@ public class PontoVenda {
     @Column(name = "TpProdLiquidCred", length = 2)
     private String TpProdLiquidCred;
 
+    //Tipo de produto de liquidação de crédito
+    @Column(name = "TpProdLiquidDeb", length = 2)
+    private String TpProdLiquidDeb;
+
     //Indicador da forma de pagamento 3-SILOC, 4-DEBITO EM CONTA CORRENTE, 5-STR
     @Column(name = "IndrFormaTransf", length = 1)
     private String IndrFormaTransf;
@@ -182,13 +186,21 @@ public class PontoVenda {
         this.TpProdLiquidCred = TpProdLiquidCred;
     }
 
+    public String getTpProdLiquidDeb() {
+        return TpProdLiquidDeb;
+    }
+
+    public void setTpProdLiquidDeb(String TpProdLiquidDeb) {
+        this.TpProdLiquidDeb = TpProdLiquidDeb;
+    }
+
     public String getIndrFormaTransf() {
         return IndrFormaTransf;
     }
 
     public void setIndrFormaTransf(String IndrFormaTransf) {
         this.IndrFormaTransf = IndrFormaTransf;
-    }    
+    }
 
     public String getCodMoeda() {
         return CodMoeda;
