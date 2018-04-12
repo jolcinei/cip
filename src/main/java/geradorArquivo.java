@@ -55,7 +55,7 @@ public class geradorArquivo extends JFrame {
     static final Date now = Calendar.getInstance().getTime();
     static final String data = simpleDateFormat.format(now);
 
-    //Aplicativo executÃ¡vel.
+    //Aplicativo executavel.
     private JMenu jMenu1;
     private JMenuBar jMenuBar1;
     private JMenuItem jMenuItem1;
@@ -71,7 +71,7 @@ public class geradorArquivo extends JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Aplicação">
+    // <editor-fold defaultstate="collapsed" desc="Aplicação executavel">
     private void iniciarComponentes() {
         //setSize(800, 600);
         setLocationRelativeTo(null);
@@ -122,14 +122,14 @@ public class geradorArquivo extends JFrame {
     }// </editor-fold>
 
     public static void main(String[] args) throws Exception {
-        //Aplicativo executÃ¡vel.
+        //Aplicativo executavel.
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new geradorArquivo().setVisible(true);
             }
         });
 
-        //inicial sem executÃ¡vel.
+        //inicial sem executavel.
         Credenciador credenciador = gerarDadosCredenciador();
 
         //Ate 50.000 registros da centralizadora por arquivo
@@ -137,16 +137,18 @@ public class geradorArquivo extends JFrame {
 
         //Seta as credenciadoras vinculadas.
         credenciador.setCentralizadoras(centralizadoras);
-        EnumServicosEventos tipo = EnumServicosEventos.ASLC031;
+        EnumServicosEventos tipo = EnumServicosEventos.ASLC029;
         //Auto incrementar a sequencia, sendo que nao pode haver a mesma sequencia de envio no mesmo dia.
         //Sequencia deve ter 5 posicoes.
         String sequencia = "00001";
-        //Gera cabeÃƒÂ§alho do arquivo a ser enviado
+        //Gera cabecalho do arquivo a ser enviado
         Arquivo arquivo = gerarDadosArquivo("ASCL" + tipo + "_" + credenciador.getCNPJBaseCreddr() + "_" + data + "_" + sequencia, tipo);
         arquivo.setCredenciador(credenciador);
 
         generateXMLFile(arquivo, tipo.getCodigo(), sequencia);
+        //Faz a leitura de um arquivo XML modelo.
         Arquivo retornoXML = lerArquivoXML027("D:\\Projetos\\Webtik\\CIP\\ASLC027\\Sucesso\\ASLC027_11111111_20170522_00001_RET.xml");
+        //Imprime o resultado na tela.
         resultadoArquivoXML(retornoXML);
     }
 
@@ -167,7 +169,7 @@ public class geradorArquivo extends JFrame {
                     arq = lerArquivoXML027(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC027);
                 } else if (part.contains("029")) {
-                    arq = lerArquivoXML029(file.getAbsolutePath());
+                    arq = lerArquivoXML029RET(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC029);
                 } else if (part.contains("031")) {
                     arq = lerArquivoXML031(file.getAbsolutePath());
@@ -175,6 +177,9 @@ public class geradorArquivo extends JFrame {
                 } else if (part.contains("022")) {
                     arq = lerArquivoXML022(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC022);
+                } else if (part.contains("028")) {
+                    arq = lerArquivoXML028(file.getAbsolutePath());
+                    arq.setServicosEventos(EnumServicosEventos.ASLC028);
                 }
 
                 final String resultadoArquivoXML = resultadoArquivoXML(arq);
@@ -186,7 +191,7 @@ public class geradorArquivo extends JFrame {
                 System.out.println("Problemas ao acessar o arquivo: " + file.getAbsolutePath());
             }
         } else {
-            System.out.println("Cancelado pelo usuÃ¡rio.");
+            System.out.println("Cancelado pelo usuario.");
         }
     }
 
@@ -702,7 +707,7 @@ public class geradorArquivo extends JFrame {
                                                     }
                                                     nPontoVenda = null;
                                                     nCentralizadora.setPontosVenda(pontoVendas);
-
+                                                    break;
                                                 case "Grupo_ASLC027RET_PontoVendaRecsdo":
                                                     NodeList nodeListPvRec = filCent.getChildNodes();
 
@@ -1169,7 +1174,7 @@ public class geradorArquivo extends JFrame {
                                                     }
                                                     nPontoVenda = null;
                                                     nCentralizadoraRec.setPontosVenda(pontoVendasRec);
-
+                                                    break;
                                                 case "Grupo_ASLC027RET_PontoVendaRecsdo":
                                                     NodeList nodeListPvRec = elFilhoCentf.getChildNodes();
 
@@ -1366,8 +1371,8 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC029">
-    public static Arquivo lerArquivoXML029(String absolutePath) {
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC029RET">
+    public static Arquivo lerArquivoXML029RET(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
         EnumTipoRetornado tipoRetornado = EnumTipoRetornado.ACTO;
@@ -1878,7 +1883,7 @@ public class geradorArquivo extends JFrame {
                                                     }
                                                     nPontoVenda = null;
                                                     nCentralizadora.setPontosVenda(pontoVendas);
-
+                                                    break;
                                                 case "Grupo_ASLC029RET_PontoVendaRecsdo":
                                                     NodeList nodeListPvRec = filCent.getChildNodes();
 
@@ -2345,7 +2350,7 @@ public class geradorArquivo extends JFrame {
                                                     }
                                                     nPontoVenda = null;
                                                     nCentralizadoraRec.setPontosVenda(pontoVendasRec);
-
+                                                    break;
                                                 case "Grupo_ASLC029RET_PontoVendaRecsdo":
                                                     NodeList nodeListPvRec = elFilhoCentf.getChildNodes();
 
@@ -3054,7 +3059,7 @@ public class geradorArquivo extends JFrame {
                                                     }
                                                     nPontoVenda = null;
                                                     nCentralizadora.setPontosVenda(pontoVendas);
-
+                                                    break;
                                                 case "Grupo_ASLC031RET_PontoVendaRecsdo":
                                                     NodeList nodeListPvRec = filCent.getChildNodes();
 
@@ -3521,7 +3526,7 @@ public class geradorArquivo extends JFrame {
                                                     }
                                                     nPontoVenda = null;
                                                     nCentralizadoraRec.setPontosVenda(pontoVendasRec);
-
+                                                    break;
                                                 case "Grupo_ASLC031RET_PontoVendaRecsdo":
                                                     NodeList nodeListPvRec = elFilhoCentf.getChildNodes();
 
@@ -3995,8 +4000,119 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC028 SLC --> Credenciador">
+    public static Arquivo lerArquivoXML028(String absolutePath) {
+        Arquivo arquivoret = new Arquivo();
+        Credenciador cred = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(absolutePath);
+
+            NodeList cabecalho = doc.getElementsByTagName("BCARQ");
+
+            int tamanhoCabecalho = cabecalho.getLength();
+
+            for (int a = 0; a < tamanhoCabecalho; a++) {
+                Node nodeCabecalho = cabecalho.item(a);
+                if (nodeCabecalho.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList itensCabecalho = nodeCabecalho.getChildNodes();
+                    int tamanhoFilhosCabecalho = itensCabecalho.getLength();
+                    for (int b = 0; b < tamanhoFilhosCabecalho; b++) {
+                        Node noCabFilho = itensCabecalho.item(b);
+
+                        if (noCabFilho.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elCabFilho = (Element) noCabFilho;
+
+                            switch (elCabFilho.getTagName()) {
+                                case "NomArq":
+                                    arquivoret.setNomArq(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlEmis":
+                                    arquivoret.setNumCtrlEmis(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlDestOr":
+                                    arquivoret.setNumCtrlDestOr(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBEmissor":
+                                    arquivoret.setISPBEmissor(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBDestinatario":
+                                    arquivoret.setISPBDestinatario(elCabFilho.getTextContent());
+                                    break;
+                                case "DtHrArq":
+                                    arquivoret.setDtHrArq(elCabFilho.getTextContent());
+                                    break;
+                                case "DtRef":
+                                    arquivoret.setDtRef(elCabFilho.getTextContent());
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC028_LiquidTranscCred");
+
+            int tamanho = nodeListLiq.getLength();
+
+            for (int i = 0; i < tamanho; i++) {
+                Node noCred = nodeListLiq.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentPartAdmtd":
+                                    cred.setIdentPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    cred.setIdentPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "NULiquid":
+                                    cred.setNULiquid(elFilho.getTextContent());
+                                    break;
+                                case "CodOcorc":
+                                    cred.setCodOcorc(elFilho.getTextContent());
+                                    break;
+
+                                case "DtHrManut":
+                                    String dataManut = elFilho.getTextContent();
+                                    String[] dates = dataManut.split("T");
+                                    String part = dates[0];
+                                    String part2 = dates[1];
+                                    org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                                    DateTime dt = formatter.parseDateTime(part + " " + part2);
+                                    cred.setDtHrManut(dt);
+                                    break;
+                            }
+                            //ToDo
+                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        arquivoret.setCredenciador(cred);
+
+        return arquivoret;
+    }// </editor-fold>
+
     public static void generateXMLFile(Arquivo arq, String tipo, String sequencia) throws IOException, Exception {
-        //Criar uma String no formato XML para o inicio da criaÃƒÂ§ao do arquivo.        
+        //Criar uma String no formato XML para o inicio da criacao do arquivo.        
         String xmlHeader;
         xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
         xmlHeader += "\n<ASLCDOC xmlns=\"http://www.cip-bancos.org.br/ARQ/ASLC" + tipo + ".xsd\">";
@@ -4058,6 +4174,15 @@ public class geradorArquivo extends JFrame {
         liquidTranscCred.appendChild(identPartPrincipal);
 
         Element identPartAdmtd = doc.createElement("IdentPartAdmtd");
+        //Alguns arquivos do modelo estao com esse campo diferente
+        switch (tipo) {
+            case "027":
+                identPartAdmtd = doc.createElement("IdentPartAdmtd");
+                break;
+            case "029":
+                identPartAdmtd = doc.createElement("IdentdPartAdmtd");
+                break;
+        }
         identPartAdmtd.setTextContent(cdr.getIdentPartAdmtd());
         liquidTranscCred.appendChild(identPartAdmtd);
 
@@ -4157,6 +4282,14 @@ public class geradorArquivo extends JFrame {
                 pontoVenda.appendChild(codInstitdrArrajPgto);
 
                 Element tpProdLiquidCred = doc.createElement("TpProdLiquidCred");
+                switch (tipo) {
+                    case "027":
+                        tpProdLiquidCred = doc.createElement("TpProdLiquidCred");
+                        break;
+                    case "029":
+                        tpProdLiquidCred = doc.createElement("TpProdLiquidDeb");
+                        break;
+                }
                 tpProdLiquidCred.setTextContent(p.getTpProdLiquidCred());
                 pontoVenda.appendChild(tpProdLiquidCred);
 
@@ -4195,7 +4328,7 @@ public class geradorArquivo extends JFrame {
     }
 
     public static void gerarRetornoArquivoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
-        //Criar uma String no formato XML para o inicio da criaÃƒÂ§ao do arquivo.        
+        //Criar uma String no formato XML para o inicio da criacao do arquivo.        
         String xmlHeader;
         xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
         xmlHeader += "\n<ASLCDOC xmlns=\"http://www.cip-bancos.org.br/ARQ/ASLC" + tipo + ".xsd\">";
@@ -4496,9 +4629,10 @@ public class geradorArquivo extends JFrame {
                 //01 - Cartao de credito, 02 - Ajustes credito
                 p.setTpProdLiquidCred("01");
                 p.setIndrFormaTransf("3");
+                //Código para BRL
                 p.setCodMoeda("790");
                 p.setDtPgto(data);
-                p.setVlrPgto(value + k);
+                p.setVlrPgto(value * (double) k);
 
                 pontosVenda.add(p);
             }
@@ -4529,56 +4663,56 @@ public class geradorArquivo extends JFrame {
         texto = texto + ("Arquivo ---------------------------------------------------------------------\n");
         texto = texto + ("NomArq --->" + retornoXML.getNomArq() + "\n");
         if (retornoXML.getCodigoErroNomArq() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroNomArq() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroNomArq() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroNomArq().getDescricao() + "\n");
         }
         if (retornoXML.getSitCons() != null) {
             texto = texto + ("SituaÃ§Ã£o Consulta --->" + retornoXML.getSitCons() + "\n");
         }
         if (retornoXML.getCodigoErroSitCons() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroSitCons() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroSitCons() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroSitCons().getDescricao() + "\n");
         }
         if (retornoXML.getNumCtrlEmis() != null) {
             texto = texto + ("Numero COntrole Emissor --->" + retornoXML.getNumCtrlEmis() + "\n");
         }
         if (retornoXML.getCodigoErroNumCtrlEmis() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroNumCtrlEmis() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroNumCtrlEmis() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroNumCtrlEmis().getDescricao() + "\n");
         }
         if (retornoXML.getNumCtrlDestOr() != null) {
             texto = texto + ("Numero Controle Destinatario --->" + retornoXML.getNumCtrlDestOr() + "\n");
         }
         if (retornoXML.getCodigoErroNumCtrlDestOr() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroNumCtrlDestOr() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroNumCtrlDestOr() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroNumCtrlDestOr().getDescricao() + "\n");
         }
         if (retornoXML.getISPBEmissor() != null) {
             texto = texto + ("ISPBEmissor --->" + retornoXML.getISPBEmissor() + "\n");
         }
         if (retornoXML.getCodigoErroISPBEmissor() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroISPBEmissor() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroISPBEmissor() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroISPBEmissor().getDescricao() + "\n");
         }
         if (retornoXML.getISPBDestinatario() != null) {
             texto = texto + ("ISPBDestinatario --->" + retornoXML.getISPBDestinatario() + "\n");
         }
         if (retornoXML.getCodigoErroISPBDestinatario() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroISPBDestinatario() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroISPBDestinatario() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroISPBDestinatario().getDescricao() + "\n");
         }
         if (retornoXML.getDtRef() != null) {
             texto = texto + ("Data referencial --->" + retornoXML.getDtRef() + "\n");
         }
         if (retornoXML.getCodigoErroDtRef() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroDtRef() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroDtRef() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroDtRef().getDescricao() + "\n");
         }
         if (retornoXML.getDtHrArq() != null) {
-            texto = texto + ("Data e hora --->" + retornoXML.getDtHrArq() + "\n");
+            texto = texto + ("Data e hora Arquivo--->" + retornoXML.getDtHrArq() + "\n");
         }
         if (retornoXML.getCodigoErroDtHrArq() != null) {
-            texto = texto + ("CÃ³d Erro --->" + retornoXML.getCodigoErroDtHrArq() + "\n");
+            texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroDtHrArq() + "\n");
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroDtHrArq().getDescricao() + "\n");
         }
         if (retornoXML.getServicosEventos() != null) {
@@ -4591,56 +4725,77 @@ public class geradorArquivo extends JFrame {
                 texto = texto + ("Credenciador Ident Principal --->" + retornoXML.getCredenciador().getIdentdPartPrincipal() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroIdentdPartPrincipal() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroIdentdPartPrincipal() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroIdentdPartPrincipal() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroIdentdPartPrincipal().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getIdentPartAdmtd() != null) {
                 texto = texto + ("Credenciador Ident Admtd      -->" + retornoXML.getCredenciador().getIdentPartAdmtd() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroIdentPartAdmtd() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroIdentPartAdmtd() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroIdentPartAdmtd() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroIdentPartAdmtd().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getCNPJBaseCreddr() != null) {
                 texto = texto + ("CNPJBaseCreddr      -->" + retornoXML.getCredenciador().getCNPJBaseCreddr() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroCNPJBaseCreddr() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroCNPJBaseCreddr() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroCNPJBaseCreddr() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroCNPJBaseCreddr().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getCNPJCreddr() != null) {
                 texto = texto + ("CNPJCreddr      -->" + retornoXML.getCredenciador().getCNPJCreddr() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroCNPJCreddr() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroCNPJCreddr() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroCNPJCreddr() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroCNPJCreddr().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getISPBIFDevdr() != null) {
                 texto = texto + ("ISPBIFDevdr      -->" + retornoXML.getCredenciador().getISPBIFDevdr() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroISPBIFDevdr() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroISPBIFDevdr() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroISPBIFDevdr() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroISPBIFDevdr().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getISPBIFCredr() != null) {
                 texto = texto + ("ISPBIFCredr      -->" + retornoXML.getCredenciador().getISPBIFCredr() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroISPBIFCredr() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroISPBIFCredr() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroISPBIFCredr() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroISPBIFCredr().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getSitRetReq() != null) {
                 texto = texto + ("SitRetReq      -->" + retornoXML.getCredenciador().getSitRetReq() + "\n");
             }
             if (retornoXML.getCredenciador().getCodigoErroSitRetReq() != null) {
-                texto = texto + ("CÃ³d Erro --->" + retornoXML.getCredenciador().getCodigoErroSitRetReq() + "\n");
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroSitRetReq() + "\n");
                 texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroSitRetReq().getDescricao() + "\n");
+            }
+            if (retornoXML.getCredenciador().getNULiquid() != null) {
+                texto = texto + ("NULiquid      -->" + retornoXML.getCredenciador().getNULiquid() + "\n");
+            }
+            if (retornoXML.getCredenciador().getCodigoErroNULiquid() != null) {
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroNULiquid() + "\n");
+                texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroNULiquid().getDescricao() + "\n");
+            }
+            if (retornoXML.getCredenciador().getCodOcorc() != null) {
+                texto = texto + ("CodOcorc      -->" + retornoXML.getCredenciador().getCodOcorc() + "\n");
+            }
+            if (retornoXML.getCredenciador().getCodigoErroCodOcorc() != null) {
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroCodOcorc() + "\n");
+                texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroCodOcorc().getDescricao() + "\n");
+            }
+            if (retornoXML.getCredenciador().getDtHrManut() != null) {
+                texto = texto + ("Data hora Manutencao      -->" + retornoXML.getCredenciador().getDtHrManut() + "\n");
+            }
+            if (retornoXML.getCredenciador().getCodigoErroDtHrManut() != null) {
+                texto = texto + ("Cod Erro --->" + retornoXML.getCredenciador().getCodigoErroDtHrManut() + "\n");
+                texto = texto + ("Descricao Erro --->" + retornoXML.getCredenciador().getCodigoErroDtHrManut().getDescricao() + "\n");
             }
             if (retornoXML.getCredenciador().getEnumTipoRetornado() != null) {
                 texto = texto + ("Tipo Retornado      -->" + retornoXML.getCredenciador().getEnumTipoRetornado() + "\n");
             }
             texto = texto + ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-            if (!retornoXML.getCredenciador().getCentralizadoras().isEmpty()) {
+            if (retornoXML.getCredenciador().getCentralizadoras() != null && !retornoXML.getCredenciador().getCentralizadoras().isEmpty()) {
                 List<Centralizadora> centralizadoras1 = retornoXML.getCredenciador().getCentralizadoras();
                 for (Centralizadora central : centralizadoras1) {
                     texto = texto + ("Centralizadora ------------------------------------------------------------\n");
@@ -4648,70 +4803,70 @@ public class geradorArquivo extends JFrame {
                         texto = texto + ("== Num. Controle Centralizadora -> " + central.getNumCtrlCreddrCentrlz() + "\n");
                     }
                     if (central.getCodigoErroNumCtrlCreddrCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroNumCtrlCreddrCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroNumCtrlCreddrCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroNumCtrlCreddrCentrlz().getDescricao() + "\n");
                     }
                     if (central.getTpPessoaCentrlz() != null) {
                         texto = texto + ("==Tipo Pessoa Centralizadora    -> " + central.getTpPessoaCentrlz() + "\n");
                     }
                     if (central.getCodigoErroTpPessoaCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroTpPessoaCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroTpPessoaCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroTpPessoaCentrlz().getDescricao() + "\n");
                     }
                     if (central.getCNPJ_CPFCentrlz() != null) {
                         texto = texto + ("==CNPJ Centralizadora           -> " + central.getCNPJ_CPFCentrlz() + "\n");
                     }
                     if (central.getCodigoErroCNPJ_CPFCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroCNPJ_CPFCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroCNPJ_CPFCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroCNPJ_CPFCentrlz().getDescricao() + "\n");
                     }
                     if (central.getCodCentrlz() != null) {
                         texto = texto + ("==Cod. Centralizadora           -> " + central.getCodCentrlz() + "\n");
                     }
                     if (central.getCodigoErroCodCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroCodCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroCodCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroCodCentrlz().getDescricao() + "\n");
                     }
                     if (central.getTpCt() != null) {
                         texto = texto + ("==Tipo Conta Centralizadora     -> " + central.getTpCt() + "\n");
                     }
                     if (central.getCodigoErroTpCt() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroTpCt() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroTpCt() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroTpCt().getDescricao() + "\n");
                     }
                     if (central.getAgCentrlz() != null) {
                         texto = texto + ("==AgÃƒÂªncia Centralizadora        -> " + central.getAgCentrlz() + "\n");
                     }
                     if (central.getCodigoErroAgCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroAgCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroAgCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroAgCentrlz().getDescricao() + "\n");
                     }
                     if (central.getCtCentrlz() != null) {
                         texto = texto + ("==Conta Centralizadora          -> " + central.getCtCentrlz() + "\n");
                     }
                     if (central.getCodigoErroCtCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroCtCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroCtCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroCtCentrlz().getDescricao() + "\n");
                     }
                     if (central.getCtPgtoCentrlz() != null) {
                         texto = texto + ("==Conta Pagamento Centralizadora -> " + central.getCtPgtoCentrlz() + "\n");
                     }
                     if (central.getCodigoErroCtPgtoCentrlz() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroCtPgtoCentrlz() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroCtPgtoCentrlz() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroCtPgtoCentrlz().getDescricao() + "\n");
                     }
                     if (central.getNumCtrlCreddrCentrlzActo() != null) {
                         texto = texto + ("==Num. Controle Centralizadora Aceito -> " + central.getNumCtrlCreddrCentrlzActo() + "\n");
                     }
                     if (central.getCodigoErroNumCtrlCreddrCentrlzActo() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroNumCtrlCreddrCentrlzActo() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroNumCtrlCreddrCentrlzActo() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroNumCtrlCreddrCentrlzActo().getDescricao() + "\n");
                     }
                     if (central.getNumCtrlCIPCentrlzActo() != null) {
                         texto = texto + ("==Num. Controle CIP Aceito -> " + central.getNumCtrlCIPCentrlzActo() + "\n");
                     }
                     if (central.getCodigoErroNumCtrlCIPCentrlzActo() != null) {
-                        texto = texto + ("CÃ³d Erro --->" + central.getCodigoErroNumCtrlCIPCentrlzActo() + "\n");
+                        texto = texto + ("Cod Erro --->" + central.getCodigoErroNumCtrlCIPCentrlzActo() + "\n");
                         texto = texto + ("Descricao Erro --->" + central.getCodigoErroNumCtrlCIPCentrlzActo().getDescricao() + "\n");
                     }
                     if (central.getEnumTipoRetornado() != null) {
@@ -4725,112 +4880,112 @@ public class geradorArquivo extends JFrame {
                                 texto = texto + ("======Num. Controle Cred. Ponto venda -> " + pv.getNumCtrlCreddrPontoVenda() + "\n");
                             }
                             if (pv.getCodigoErroNumCtrlCreddrPontoVenda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroNumCtrlCreddrPontoVenda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroNumCtrlCreddrPontoVenda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroNumCtrlCreddrPontoVenda().getDescricao() + "\n");
                             }
                             if (pv.getISPBIFLiquidPontoVenda() != null) {
-                                texto = texto + ("======ISPB da IF LiquidaÃƒÂ§ao Ponto Venda -> " + pv.getISPBIFLiquidPontoVenda() + "\n");
+                                texto = texto + ("======ISPB da IF Liquidacao Ponto Venda -> " + pv.getISPBIFLiquidPontoVenda() + "\n");
                             }
                             if (pv.getCodigoErroISPBIFLiquidPontoVenda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroISPBIFLiquidPontoVenda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroISPBIFLiquidPontoVenda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroISPBIFLiquidPontoVenda().getDescricao() + "\n");
                             }
                             if (pv.getCodPontoVenda() != null) {
                                 texto = texto + ("======Codigo Ponto Venda -> " + pv.getCodPontoVenda() + "\n");
                             }
                             if (pv.getCodigoErroCodPontoVenda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroCodPontoVenda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroCodPontoVenda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroCodPontoVenda().getDescricao() + "\n");
                             }
                             if (pv.getNomePontoVenda() != null) {
                                 texto = texto + ("======NOme Ponto Venda -> " + pv.getNomePontoVenda() + "\n");
                             }
                             if (pv.getCodigoErroNomePontoVenda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroNomePontoVenda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroNomePontoVenda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroNomePontoVenda().getDescricao() + "\n");
                             }
                             if (pv.getTpPessoaPontoVenda() != null) {
                                 texto = texto + ("======Tipo Pessoa Ponto Venda -> " + pv.getTpPessoaPontoVenda() + "\n");
                             }
                             if (pv.getCodigoErroTpPessoaPontoVenda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroTpPessoaPontoVenda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroTpPessoaPontoVenda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroTpPessoaPontoVenda().getDescricao() + "\n");
                             }
                             if (pv.getCNPJ_CPFPontoVenda() != null) {
                                 texto = texto + ("======Cnpj cpf Ponto Venda -> " + pv.getCNPJ_CPFPontoVenda() + "\n");
                             }
                             if (pv.getCodigoErroCNPJ_CPFPontoVenda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroCNPJ_CPFPontoVenda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroCNPJ_CPFPontoVenda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroCNPJ_CPFPontoVenda().getDescricao() + "\n");
                             }
                             if (pv.getCodInstitdrArrajPgto() != null) {
-                                texto = texto + ("======Codigo InstituiÃƒÂ§ao Arranjo de pagamento -> " + pv.getCodInstitdrArrajPgto() + "\n");
+                                texto = texto + ("======Codigo Instituicao Arranjo de pagamento -> " + pv.getCodInstitdrArrajPgto() + "\n");
                             }
                             if (pv.getCodigoErroCodInstitdrArrajPgto() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroCodInstitdrArrajPgto() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroCodInstitdrArrajPgto() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroCodInstitdrArrajPgto().getDescricao() + "\n");
                             }
                             if (pv.getTpProdLiquidCred() != null) {
-                                texto = texto + ("======Tipo de Produto LiquidaÃƒÂ§ao de credito -> " + pv.getTpProdLiquidCred() + "\n");
+                                texto = texto + ("======Tipo de Produto Liquidacao de credito -> " + pv.getTpProdLiquidCred() + "\n");
                             }
                             if (pv.getCodigoErroTpProdLiquidCred() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroTpProdLiquidCred() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroTpProdLiquidCred() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroTpProdLiquidCred().getDescricao() + "\n");
                             }
                             if (pv.getIndrFormaTransf() != null) {
                                 texto = texto + ("======Forma de transferencia -> " + pv.getIndrFormaTransf() + "\n");
                             }
                             if (pv.getCodigoErroIndrFormaTransf() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroIndrFormaTransf() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroIndrFormaTransf() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroIndrFormaTransf().getDescricao() + "\n");
                             }
                             if (pv.getCodMoeda() != null) {
                                 texto = texto + ("======Moeda -> " + pv.getCodMoeda() + "\n");
                             }
                             if (pv.getCodigoErroCodMoeda() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroCodMoeda() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroCodMoeda() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroCodMoeda().getDescricao() + "\n");
                             }
                             if (pv.getDtPgto() != null) {
                                 texto = texto + ("======Data do Pagamento -> " + pv.getDtPgto() + "\n");
                             }
                             if (pv.getCodigoErroDtPgto() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroDtPgto() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroDtPgto() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroDtPgto().getDescricao() + "\n");
                             }
                             if (pv.getVlrPgto() >= 0.0) {
                                 texto = texto + ("======Valor -> " + pv.getVlrPgto() + "\n");
                             }
                             if (pv.getCodigoErroVlrPgto() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroVlrPgto() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroVlrPgto() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroVlrPgto().getDescricao() + "\n");
                             }
                             if (pv.getNumCtrlCreddrPontoVendaActo() != null) {
                                 texto = texto + ("======Num. Controle Cred. Ponto venda Aceito -> " + pv.getNumCtrlCreddrPontoVendaActo() + "\n");
                             }
                             if (pv.getCodigoErroNumCtrlCreddrPontoVendaActo() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroNumCtrlCreddrPontoVendaActo() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroNumCtrlCreddrPontoVendaActo() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroNumCtrlCreddrPontoVendaActo().getDescricao() + "\n");
                             }
                             if (pv.getNumCtrlCIPPontoVendaActo() != null) {
                                 texto = texto + ("======Num. Controle CIP Ponto venda Aceito -> " + pv.getNumCtrlCIPPontoVendaActo() + "\n");
                             }
                             if (pv.getCodigoErroNumCtrlCIPPontoVendaActo() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroNumCtrlCIPPontoVendaActo() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroNumCtrlCIPPontoVendaActo() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroNumCtrlCIPPontoVendaActo().getDescricao() + "\n");
                             }
                             if (pv.getNULiquid() != null) {
                                 texto = texto + ("======NULiquid -> " + pv.getNULiquid() + "\n");
                             }
                             if (pv.getCodigoErroNULiquid() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroNULiquid() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroNULiquid() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroNULiquid().getDescricao() + "\n");
                             }
                             if (pv.getDtHrManut() != null) {
-                                texto = texto + ("======Data hora manutenÃƒÂ§ao -> " + pv.getDtHrManut() + "\n");
+                                texto = texto + ("======Data hora manutencao -> " + pv.getDtHrManut() + "\n");
                             }
                             if (pv.getCodigoErroDtHrManut() != null) {
-                                texto = texto + ("CÃ³d Erro --->" + pv.getCodigoErroDtHrManut() + "\n");
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroDtHrManut() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroDtHrManut().getDescricao() + "\n");
                             }
                             if (pv.getEnumTipoRetornado() != null) {
