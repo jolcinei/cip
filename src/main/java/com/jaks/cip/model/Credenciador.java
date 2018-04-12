@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -73,7 +74,7 @@ public class Credenciador {
 
     //Data hora manutenção yyyyMMddHHmmss
     @Column(name = "DtHrManut", length = 19)
-    private Date DtHrManut;
+    private DateTime DtHrManut;
 
     //Pegar os erros por cada campo do arquivo.
     private EnumCodigoErro codigoErroIdentdPartPrincipal;
@@ -198,11 +199,11 @@ public class Credenciador {
         this.NULiquid = NULiquid;
     }
 
-    public Date getDtHrManut() {
+    public DateTime getDtHrManut() {
         return DtHrManut;
     }
 
-    public void setDtHrManut(Date DtHrManut) {
+    public void setDtHrManut(DateTime DtHrManut) {
         this.DtHrManut = DtHrManut;
     }
 
