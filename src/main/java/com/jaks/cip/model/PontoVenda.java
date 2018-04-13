@@ -58,6 +58,10 @@ public class PontoVenda {
     @Column(name = "TpProdLiquidDeb", length = 2)
     private String TpProdLiquidDeb;
 
+    //Tipo de produto de liquidação de crédito
+    @Column(name = "TpProdLiquidCarts", length = 2)
+    private String TpProdLiquidCarts;
+
     //Indicador da forma de pagamento 3-SILOC, 4-DEBITO EM CONTA CORRENTE, 5-STR
     @Column(name = "IndrFormaTransf", length = 1)
     private String IndrFormaTransf;
@@ -105,6 +109,8 @@ public class PontoVenda {
     private EnumCodigoErro codigoErroCNPJ_CPFPontoVenda;
     private EnumCodigoErro codigoErroCodInstitdrArrajPgto;
     private EnumCodigoErro codigoErroTpProdLiquidCred;
+    private EnumCodigoErro codigoErroTpProdLiquidDeb;
+    private EnumCodigoErro codigoErroTpProdLiquidCarts;
     private EnumCodigoErro codigoErroIndrFormaTransf;
     private EnumCodigoErro codigoErroCodMoeda;
     private EnumCodigoErro codigoErroDtPgto;
@@ -192,6 +198,14 @@ public class PontoVenda {
 
     public void setTpProdLiquidDeb(String TpProdLiquidDeb) {
         this.TpProdLiquidDeb = TpProdLiquidDeb;
+    }
+
+    public String getTpProdLiquidCarts() {
+        return TpProdLiquidCarts;
+    }
+
+    public void setTpProdLiquidCarts(String TpProdLiquidCarts) {
+        this.TpProdLiquidCarts = TpProdLiquidCarts;
     }
 
     public String getIndrFormaTransf() {
@@ -328,6 +342,22 @@ public class PontoVenda {
 
     public void setCodigoErroTpProdLiquidCred(EnumCodigoErro codigoErroTpProdLiquidCred) {
         this.codigoErroTpProdLiquidCred = codigoErroTpProdLiquidCred;
+    }
+
+    public EnumCodigoErro getCodigoErroTpProdLiquidDeb() {
+        return codigoErroTpProdLiquidDeb;
+    }
+
+    public void setCodigoErroTpProdLiquidDeb(EnumCodigoErro codigoErroTpProdLiquidDeb) {
+        this.codigoErroTpProdLiquidDeb = codigoErroTpProdLiquidDeb;
+    }
+
+    public EnumCodigoErro getCodigoErroTpProdLiquidCarts() {
+        return codigoErroTpProdLiquidCarts;
+    }
+
+    public void setCodigoErroTpProdLiquidCarts(EnumCodigoErro codigoErroTpProdLiquidCarts) {
+        this.codigoErroTpProdLiquidCarts = codigoErroTpProdLiquidCarts;
     }
 
     public EnumCodigoErro getCodigoErroIndrFormaTransf() {

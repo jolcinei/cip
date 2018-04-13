@@ -6,6 +6,7 @@
 package com.jaks.cip.model;
 
 import com.jaks.cip.enuns.EnumCodigoErro;
+import com.jaks.cip.enuns.EnumCodigoOcorrencia;
 import com.jaks.cip.enuns.EnumRetornoRequisicao;
 import com.jaks.cip.enuns.EnumTipoRetornado;
 import java.util.Date;
@@ -56,8 +57,8 @@ public class Credenciador {
     private String CtCreddr;
 
     //Nome do Credenciador
-    @Column(name = "NomeCreddr", length = 80)
-    private String NomeCreddr;
+    @Column(name = "NomCreddr", length = 80)
+    private String NomCreddr;
 
     //Situação do retorno
     @Column(name = "SitRetReq", length = 1)
@@ -65,7 +66,7 @@ public class Credenciador {
 
     //Código da Ocorência 2 posições.
     @Column(name = "CodOcorc", length = 2)
-    private String CodOcorc;
+    private EnumCodigoOcorrencia CodOcorc;
 
     //Numero único liquidação
     //formado sugerido data yyyyMMdd + sequencia de 13 posições.
@@ -167,12 +168,12 @@ public class Credenciador {
         this.CtCreddr = CtCreddr;
     }
 
-    public String getNomeCreddr() {
-        return NomeCreddr;
+    public String getNomCreddr() {
+        return NomCreddr;
     }
 
-    public void setNomeCreddr(String NomeCreddr) {
-        this.NomeCreddr = NomeCreddr;
+    public void setNomCreddr(String NomCreddr) {
+        this.NomCreddr = NomCreddr;
     }
 
     public EnumRetornoRequisicao getSitRetReq() {
@@ -183,11 +184,11 @@ public class Credenciador {
         this.SitRetReq = SitRetReq;
     }
 
-    public String getCodOcorc() {
+    public EnumCodigoOcorrencia getCodOcorc() {
         return CodOcorc;
     }
 
-    public void setCodOcorc(String CodOcorc) {
+    public void setCodOcorc(EnumCodigoOcorrencia CodOcorc) {
         this.CodOcorc = CodOcorc;
     }
 

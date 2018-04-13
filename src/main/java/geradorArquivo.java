@@ -1,5 +1,6 @@
 
 import com.jaks.cip.enuns.EnumCodigoErro;
+import com.jaks.cip.enuns.EnumCodigoOcorrencia;
 import com.jaks.cip.enuns.EnumInstituidorArranjoPagamento;
 import com.jaks.cip.enuns.EnumRetornoRequisicao;
 import com.jaks.cip.enuns.EnumServicosEventos;
@@ -137,7 +138,7 @@ public class geradorArquivo extends JFrame {
 
         //Seta as credenciadoras vinculadas.
         credenciador.setCentralizadoras(centralizadoras);
-        EnumServicosEventos tipo = EnumServicosEventos.ASLC029;
+        EnumServicosEventos tipo = EnumServicosEventos.ASLC031;
         //Auto incrementar a sequencia, sendo que nao pode haver a mesma sequencia de envio no mesmo dia.
         //Sequencia deve ter 5 posicoes.
         String sequencia = "00001";
@@ -145,7 +146,7 @@ public class geradorArquivo extends JFrame {
         Arquivo arquivo = gerarDadosArquivo("ASCL" + tipo + "_" + credenciador.getCNPJBaseCreddr() + "_" + data + "_" + sequencia, tipo);
         arquivo.setCredenciador(credenciador);
 
-        generateXMLFile(arquivo, tipo.getCodigo(), sequencia);
+        gerarArquivoXML(arquivo, tipo.getCodigo(), sequencia, new ArrayList<EnumCodigoErro>());
         //Faz a leitura de um arquivo XML modelo.
         Arquivo retornoXML = lerArquivoXML027RET("D:\\Projetos\\Webtik\\CIP\\ASLC027\\Sucesso\\ASLC027_11111111_20170522_00001_RET.xml");
         //Imprime o resultado na tela.
@@ -172,7 +173,7 @@ public class geradorArquivo extends JFrame {
                     arq = lerArquivoXML029RET(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC029);
                 } else if (part.contains("031")) {
-                    arq = lerArquivoXML031(file.getAbsolutePath());
+                    arq = lerArquivoXML031RET(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC031);
                 } else if (part.contains("022")) {
                     arq = lerArquivoXML022(file.getAbsolutePath());
@@ -183,6 +184,9 @@ public class geradorArquivo extends JFrame {
                 } else if (part.contains("030")) {
                     arq = lerArquivoXML030(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC030);
+                } else if (part.contains("034")) {
+                    arq = lerArquivoXML034(file.getAbsolutePath());
+                    arq.setServicosEventos(EnumServicosEventos.ASLC034);
                 }
 
                 final String resultadoArquivoXML = resultadoArquivoXML(arq);
@@ -410,7 +414,7 @@ public class geradorArquivo extends JFrame {
                                             cred.setCodigoErroNomeCreddr(codigoErro);
                                         }
                                     }
-                                    cred.setNomeCreddr(elFilho.getTextContent());
+                                    cred.setNomCreddr(elFilho.getTextContent());
                                     break;
                                 case "SitRetReq":
                                     //Pega atributo de erro no arquivo
@@ -1586,7 +1590,7 @@ public class geradorArquivo extends JFrame {
                                             cred.setCodigoErroNomeCreddr(codigoErro);
                                         }
                                     }
-                                    cred.setNomeCreddr(elFilho.getTextContent());
+                                    cred.setNomCreddr(elFilho.getTextContent());
                                     break;
                                 case "SitRetReq":
                                     //Pega atributo de erro no arquivo
@@ -1791,14 +1795,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidDeb":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVenda.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVenda.setCodigoErroTpProdLiquidDeb(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVenda.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVenda.setTpProdLiquidDeb(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -1966,14 +1970,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidDeb":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidDeb(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVendaRec.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVendaRec.setTpProdLiquidDeb(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -2258,14 +2262,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidDeb":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVenda.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVenda.setCodigoErroTpProdLiquidDeb(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVenda.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVenda.setTpProdLiquidDeb(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -2433,14 +2437,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidDeb":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidDeb(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVendaRec.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVendaRec.setTpProdLiquidDeb(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -2550,8 +2554,8 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC031">
-    public static Arquivo lerArquivoXML031(String absolutePath) {
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC031RET">
+    public static Arquivo lerArquivoXML031RET(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
         EnumTipoRetornado tipoRetornado = EnumTipoRetornado.ACTO;
@@ -2762,7 +2766,7 @@ public class geradorArquivo extends JFrame {
                                             cred.setCodigoErroNomeCreddr(codigoErro);
                                         }
                                     }
-                                    cred.setNomeCreddr(elFilho.getTextContent());
+                                    cred.setNomCreddr(elFilho.getTextContent());
                                     break;
                                 case "SitRetReq":
                                     //Pega atributo de erro no arquivo
@@ -2967,14 +2971,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidCarts":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVenda.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVenda.setCodigoErroTpProdLiquidCarts(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVenda.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVenda.setTpProdLiquidCarts(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -3142,14 +3146,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidCarts":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidCarts(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVendaRec.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVendaRec.setTpProdLiquidCarts(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -3434,14 +3438,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidCarts":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVenda.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVenda.setCodigoErroTpProdLiquidCarts(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVenda.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVenda.setTpProdLiquidCarts(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -3609,14 +3613,14 @@ public class geradorArquivo extends JFrame {
                                                                         }
                                                                     }
                                                                     break;
-                                                                case "TpProdLiquidCred":
+                                                                case "TpProdLiquidCarts":
                                                                     //Pega atributo de erro no arquivo
                                                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                                                         if (elFilhoPontoVenda.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidCred(codigoErro);
+                                                                            nPontoVendaRec.setCodigoErroTpProdLiquidCarts(codigoErro);
                                                                         }
                                                                     }
-                                                                    nPontoVendaRec.setTpProdLiquidCred(elFilhoPontoVenda.getTextContent());
+                                                                    nPontoVendaRec.setTpProdLiquidCarts(elFilhoPontoVenda.getTextContent());
                                                                     break;
                                                                 case "IndrFormaTransf":
                                                                     //Pega atributo de erro no arquivo
@@ -3726,7 +3730,7 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC022 SLC --> Domicilio">
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC022 SLC(CIP) --> Domicilio">
     public static Arquivo lerArquivoXML022(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
@@ -3834,7 +3838,7 @@ public class geradorArquivo extends JFrame {
                                     cred.setCtCreddr(elFilho.getTextContent());
                                     break;
                                 case "NomeCreddr":
-                                    cred.setNomeCreddr(elFilho.getTextContent());
+                                    cred.setNomCreddr(elFilho.getTextContent());
                                     break;
                                 case "SitRetReq":
                                     List<EnumRetornoRequisicao> retornoRequisicaos = new ArrayList<>(EnumSet.allOf(EnumRetornoRequisicao.class));
@@ -3996,14 +4000,14 @@ public class geradorArquivo extends JFrame {
         String[] names = name.split("_");
         String sequencia = names[3];
         try {
-            gerarRetornoArquivoXML(arquivoret, EnumServicosEventos.ASLC023.getCodigo(), sequencia, erros);
+            gerarArquivoXML(arquivoret, EnumServicosEventos.ASLC023.getCodigo(), sequencia, erros);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return arquivoret;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC028 SLC --> Credenciador">
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC028 SLC(CIP) --> Credenciador">
     public static Arquivo lerArquivoXML028(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
@@ -4086,9 +4090,13 @@ public class geradorArquivo extends JFrame {
                                     cred.setNULiquid(elFilho.getTextContent());
                                     break;
                                 case "CodOcorc":
-                                    cred.setCodOcorc(elFilho.getTextContent());
+                                    List<EnumCodigoOcorrencia> ocorrencias = new ArrayList<>(EnumSet.allOf(EnumCodigoOcorrencia.class));
+                                    for (EnumCodigoOcorrencia ocorrencia : ocorrencias) {
+                                        if (elFilho.getTextContent().equals(ocorrencia.getCodigo())) {
+                                            cred.setCodOcorc(ocorrencia);
+                                        }
+                                    }
                                     break;
-
                                 case "DtHrManut":
                                     String dataManut = elFilho.getTextContent();
                                     String[] dates = dataManut.split("T");
@@ -4114,7 +4122,7 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC028 SLC --> Credenciador">
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC030 SLC(CIP) --> Credenciador">
     public static Arquivo lerArquivoXML030(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
@@ -4197,7 +4205,12 @@ public class geradorArquivo extends JFrame {
                                     cred.setNULiquid(elFilho.getTextContent());
                                     break;
                                 case "CodOcorc":
-                                    cred.setCodOcorc(elFilho.getTextContent());
+                                    List<EnumCodigoOcorrencia> ocorrencias = new ArrayList<>(EnumSet.allOf(EnumCodigoOcorrencia.class));
+                                    for (EnumCodigoOcorrencia ocorrencia : ocorrencias) {
+                                        if (elFilho.getTextContent().equals(ocorrencia.getCodigo())) {
+                                            cred.setCodOcorc(ocorrencia);
+                                        }
+                                    }
                                     break;
 
                                 case "DtHrManut":
@@ -4210,8 +4223,6 @@ public class geradorArquivo extends JFrame {
                                     cred.setDtHrManut(dt);
                                     break;
                             }
-                            //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -4225,7 +4236,121 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    public static void generateXMLFile(Arquivo arq, String tipo, String sequencia) throws IOException, Exception {
+    // <editor-fold defaultstate="collapsed" desc="Ler arquivo ASLC034 SLC(CIP) --> Credenciador">
+    public static Arquivo lerArquivoXML034(String absolutePath) {
+        Arquivo arquivoret = new Arquivo();
+        Credenciador cred = null;
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(absolutePath);
+
+            NodeList cabecalho = doc.getElementsByTagName("BCARQ");
+
+            int tamanhoCabecalho = cabecalho.getLength();
+
+            for (int a = 0; a < tamanhoCabecalho; a++) {
+                Node nodeCabecalho = cabecalho.item(a);
+                if (nodeCabecalho.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList itensCabecalho = nodeCabecalho.getChildNodes();
+                    int tamanhoFilhosCabecalho = itensCabecalho.getLength();
+                    for (int b = 0; b < tamanhoFilhosCabecalho; b++) {
+                        Node noCabFilho = itensCabecalho.item(b);
+
+                        if (noCabFilho.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elCabFilho = (Element) noCabFilho;
+
+                            switch (elCabFilho.getTagName()) {
+                                case "NomArq":
+                                    arquivoret.setNomArq(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlEmis":
+                                    arquivoret.setNumCtrlEmis(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlDestOr":
+                                    arquivoret.setNumCtrlDestOr(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBEmissor":
+                                    arquivoret.setISPBEmissor(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBDestinatario":
+                                    arquivoret.setISPBDestinatario(elCabFilho.getTextContent());
+                                    break;
+                                case "DtHrArq":
+                                    arquivoret.setDtHrArq(elCabFilho.getTextContent());
+                                    break;
+                                case "DtRef":
+                                    arquivoret.setDtRef(elCabFilho.getTextContent());
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC034_LiquidTranscCarts");
+
+            int tamanho = nodeListLiq.getLength();
+
+            for (int i = 0; i < tamanho; i++) {
+                Node noCred = nodeListLiq.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentPartAdmtd":
+                                    cred.setIdentPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    cred.setIdentPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "NULiquid":
+                                    cred.setNULiquid(elFilho.getTextContent());
+                                    break;
+                                case "CodOcorc":
+                                    List<EnumCodigoOcorrencia> ocorrencias = new ArrayList<>(EnumSet.allOf(EnumCodigoOcorrencia.class));
+                                    for (EnumCodigoOcorrencia ocorrencia : ocorrencias) {
+                                        if (elFilho.getTextContent().equals(ocorrencia.getCodigo())) {
+                                            cred.setCodOcorc(ocorrencia);
+                                        }
+                                    }
+                                    break;
+
+                                case "DtHrManut":
+                                    String dataManut = elFilho.getTextContent();
+                                    String[] dates = dataManut.split("T");
+                                    String part = dates[0];
+                                    String part2 = dates[1];
+                                    org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                                    DateTime dt = formatter.parseDateTime(part + " " + part2);
+                                    cred.setDtHrManut(dt);
+                                    break;
+                            }
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        arquivoret.setCredenciador(cred);
+
+        return arquivoret;
+    }// </editor-fold>
+
+    public static void gerarArquivoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
         //Criar uma String no formato XML para o inicio da criacao do arquivo.        
         String xmlHeader;
         xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
@@ -4236,9 +4361,9 @@ public class geradorArquivo extends JFrame {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbf.newDocumentBuilder();
         Document doc = docBuilder.parse(xml);
-        //Pega o no rais da ÃƒÂ¡rvore do XML.
+        //Pega a rais da arvore do XML.
         Element rootNode = doc.getDocumentElement();
-        //Cria e adiciona o no base da NFe no no rais do XML.
+        //Cria e adiciona a rais do XML.
 
         Element bcarq = doc.createElement("BCARQ");
 
@@ -4269,23 +4394,26 @@ public class geradorArquivo extends JFrame {
         Element sisarq = doc.createElement("SISARQ");
 
         Element asl = doc.createElement("ASLC" + tipo);
-        Element liquidTranscCred = null;
+        Element liquidTransc = null;
         switch (tipo) {
             case "027":
-                liquidTranscCred = doc.createElement("Grupo_ASLC027_LiquidTranscCred");
+                liquidTransc = doc.createElement("Grupo_ASLC027_LiquidTranscCred");
                 break;
             case "029":
-                liquidTranscCred = doc.createElement("Grupo_ASLC029_LiquidTranscDeb");
+                liquidTransc = doc.createElement("Grupo_ASLC029_LiquidTranscDeb");
                 break;
             case "031":
-                liquidTranscCred = doc.createElement("Grupo_ASLC031_LiquidTranscCarts");
+                liquidTransc = doc.createElement("Grupo_ASLC031_LiquidTranscCarts");
+                break;
+            case "023":
+                liquidTransc = doc.createElement("Grupo_ASLC023_LiquidTranscCred");
                 break;
         }
         Credenciador cdr = arq.getCredenciador();
 
         Element identPartPrincipal = doc.createElement("IdentdPartPrincipal");
         identPartPrincipal.setTextContent(cdr.getIdentdPartPrincipal());
-        liquidTranscCred.appendChild(identPartPrincipal);
+        liquidTransc.appendChild(identPartPrincipal);
 
         Element identPartAdmtd = doc.createElement("IdentPartAdmtd");
         //Alguns arquivos do modelo estao com esse campo diferente
@@ -4296,254 +4424,47 @@ public class geradorArquivo extends JFrame {
             case "029":
                 identPartAdmtd = doc.createElement("IdentdPartAdmtd");
                 break;
-        }
-        identPartAdmtd.setTextContent(cdr.getIdentPartAdmtd());
-        liquidTranscCred.appendChild(identPartAdmtd);
-
-        Element CNPJBaseCreddr = doc.createElement("CNPJBaseCreddr");
-        CNPJBaseCreddr.setTextContent(cdr.getCNPJBaseCreddr());
-        liquidTranscCred.appendChild(CNPJBaseCreddr);
-
-        Element CNPJCreddr = doc.createElement("CNPJCreddr");
-        CNPJCreddr.setTextContent(cdr.getCNPJCreddr());
-        liquidTranscCred.appendChild(CNPJCreddr);
-
-        Element ISPBIFDevdr = doc.createElement("ISPBIFDevdr");
-        ISPBIFDevdr.setTextContent(cdr.getISPBIFDevdr());
-        liquidTranscCred.appendChild(ISPBIFDevdr);
-
-        Element ISPBIFCredr = doc.createElement("ISPBIFCredr");
-        ISPBIFCredr.setTextContent(cdr.getISPBIFCredr());
-        liquidTranscCred.appendChild(ISPBIFCredr);
-
-        Element agCreddr = doc.createElement("AgCreddr");
-        agCreddr.setTextContent(cdr.getAgCreddr());
-        liquidTranscCred.appendChild(agCreddr);
-
-        Element ctCreddr = doc.createElement("CtCreddr");
-        ctCreddr.setTextContent(cdr.getCtCreddr());
-        liquidTranscCred.appendChild(ctCreddr);
-
-        Element nomeCreddr = doc.createElement("NomeCreddr");
-        nomeCreddr.setTextContent(cdr.getNomeCreddr());
-        liquidTranscCred.appendChild(nomeCreddr);
-
-        for (Centralizadora c : cdr.getCentralizadoras()) {
-            Element centerlz = doc.createElement("Grupo_ASLC" + tipo + "_Centrlz");
-
-            Element numCtrlCreddrCentrlz = doc.createElement("NumCtrlCreddrCentrlz");
-            numCtrlCreddrCentrlz.setTextContent(c.getNumCtrlCreddrCentrlz());
-            centerlz.appendChild(numCtrlCreddrCentrlz);
-
-            Element tpPessoaCentrlz = doc.createElement("TpPessoaCentrlz");
-            tpPessoaCentrlz.setTextContent(c.getTpPessoaCentrlz());
-            centerlz.appendChild(tpPessoaCentrlz);
-
-            Element CNPJ_CPFCentrlz = doc.createElement("CNPJ_CPFCentrlz");
-            CNPJ_CPFCentrlz.setTextContent(c.getCNPJ_CPFCentrlz());
-            centerlz.appendChild(CNPJ_CPFCentrlz);
-
-            Element codCentrlz = doc.createElement("CodCentrlz");
-            codCentrlz.setTextContent(c.getCodCentrlz());
-            centerlz.appendChild(codCentrlz);
-
-            Element tpCt = doc.createElement("TpCt");
-            tpCt.setTextContent(c.getTpCt().getTipo());
-            centerlz.appendChild(tpCt);
-
-            Element agCentrlz = doc.createElement("AgCentrlz");
-            agCentrlz.setTextContent(c.getAgCentrlz());
-            centerlz.appendChild(agCentrlz);
-
-            Element ctCentrlz = doc.createElement("CtCentrlz");
-            ctCentrlz.setTextContent(c.getCtCentrlz());
-            centerlz.appendChild(ctCentrlz);
-
-            Element ctPgtoCentrlz = doc.createElement("CtPgtoCentrlz");
-            ctPgtoCentrlz.setTextContent(c.getCtPgtoCentrlz());
-            centerlz.appendChild(ctPgtoCentrlz);
-
-            for (PontoVenda p : c.getPontosVenda()) {
-
-                Element pontoVenda = doc.createElement("Grupo_ASLC" + tipo + "_PontoVenda");
-
-                Element numCtrlCreddrPontoVenda = doc.createElement("NumCtrlCreddrPontoVenda");
-                numCtrlCreddrPontoVenda.setTextContent(p.getNumCtrlCreddrPontoVenda());
-                pontoVenda.appendChild(numCtrlCreddrPontoVenda);
-
-                Element ISPBIFLiquidPontoVenda = doc.createElement("ISPBIFLiquidPontoVenda");
-                ISPBIFLiquidPontoVenda.setTextContent(p.getISPBIFLiquidPontoVenda());
-                pontoVenda.appendChild(ISPBIFLiquidPontoVenda);
-
-                Element codPontoVenda = doc.createElement("CodPontoVenda");
-                codPontoVenda.setTextContent(p.getCodPontoVenda());
-                pontoVenda.appendChild(codPontoVenda);
-
-                Element nomePontoVenda = doc.createElement("NomePontoVenda");
-                nomePontoVenda.setTextContent(p.getNomePontoVenda());
-                pontoVenda.appendChild(nomePontoVenda);
-
-                Element tpPessoaPontoVenda = doc.createElement("TpPessoaPontoVenda");
-                tpPessoaPontoVenda.setTextContent(p.getTpPessoaPontoVenda());
-                pontoVenda.appendChild(tpPessoaPontoVenda);
-
-                Element CNPJ_CPFPontoVenda = doc.createElement("CNPJ_CPFPontoVenda");
-                CNPJ_CPFPontoVenda.setTextContent(p.getCNPJ_CPFPontoVenda());
-                pontoVenda.appendChild(CNPJ_CPFPontoVenda);
-
-                Element codInstitdrArrajPgto = doc.createElement("CodInstitdrArrajPgto");
-                codInstitdrArrajPgto.setTextContent(p.getCodInstitdrArrajPgto().getDominio());
-                pontoVenda.appendChild(codInstitdrArrajPgto);
-
-                Element tpProdLiquidCred = doc.createElement("TpProdLiquidCred");
-                switch (tipo) {
-                    case "027":
-                        tpProdLiquidCred = doc.createElement("TpProdLiquidCred");
-                        break;
-                    case "029":
-                        tpProdLiquidCred = doc.createElement("TpProdLiquidDeb");
-                        break;
-                }
-                tpProdLiquidCred.setTextContent(p.getTpProdLiquidCred());
-                pontoVenda.appendChild(tpProdLiquidCred);
-
-                Element indFormaTransf = doc.createElement("IndrFormaTransf");
-                indFormaTransf.setTextContent(p.getIndrFormaTransf());
-                pontoVenda.appendChild(indFormaTransf);
-
-                Element codMoeda = doc.createElement("CodMoeda");
-                codMoeda.setTextContent(p.getCodMoeda());
-                pontoVenda.appendChild(codMoeda);
-
-                Element dtPgto = doc.createElement("DtPgto");
-                dtPgto.setTextContent(p.getDtPgto());
-                pontoVenda.appendChild(dtPgto);
-
-                Element vlrPgto = doc.createElement("VlrPgto");
-                vlrPgto.setTextContent(Double.toString(p.getVlrPgto()));
-                pontoVenda.appendChild(vlrPgto);
-
-                centerlz.appendChild(pontoVenda);
-            }
-            liquidTranscCred.appendChild(centerlz);
-        }
-        asl.appendChild(liquidTranscCred);
-        sisarq.appendChild(asl);
-        rootNode.appendChild(bcarq);
-        rootNode.appendChild(sisarq);
-
-        //Salva o documento XML no diretorio passando o parametro.			
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new FileOutputStream("D:/xml/" + "ASLC" + tipo + "_" + cdr.getCNPJBaseCreddr()
-                + "_" + data + "_" + sequencia + ".xml"));
-        TransformerFactory transFactory = TransformerFactory.newInstance();
-        Transformer transformer = transFactory.newTransformer();
-        transformer.transform(source, result);
-    }
-
-    public static void gerarRetornoArquivoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
-        //Criar uma String no formato XML para o inicio da criacao do arquivo.        
-        String xmlHeader;
-        xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
-        xmlHeader += "\n<ASLCDOC xmlns=\"http://www.cip-bancos.org.br/ARQ/ASLC" + tipo + ".xsd\">";
-        xmlHeader += "\n</ASLCDOC>\n";
-
-        ByteArrayInputStream xml = new ByteArrayInputStream(new String(xmlHeader.getBytes(), "UTF-8").getBytes());
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-        Document doc = docBuilder.parse(xml);
-        //Pega o no rais da ÃƒÂ¡rvore do XML.
-        Element rootNode = doc.getDocumentElement();
-        //Cria e adiciona o no base da NFe no no rais do XML.
-
-        Element bcarq = doc.createElement("BCARQ");
-
-        Element nomArq = doc.createElement("NomArq");
-        nomArq.setTextContent(arq.getNomArq());
-        bcarq.appendChild(nomArq);
-
-        Element numCtrlEmis = doc.createElement("NumCtrlEmis");
-        numCtrlEmis.setTextContent(arq.getNumCtrlEmis());
-        bcarq.appendChild(numCtrlEmis);
-
-        Element ISPBEmissor = doc.createElement("ISPBEmissor");
-        ISPBEmissor.setTextContent(arq.getISPBEmissor());
-        bcarq.appendChild(ISPBEmissor);
-
-        Element ISPBDestinatario = doc.createElement("ISPBDestinatario");
-        ISPBDestinatario.setTextContent(arq.getISPBDestinatario());
-        bcarq.appendChild(ISPBDestinatario);
-
-        Element dtHrArq = doc.createElement("DtHrArq");
-        dtHrArq.setTextContent(arq.getDtHrArq());
-        bcarq.appendChild(dtHrArq);
-
-        Element dtRef = doc.createElement("DtRef");
-        dtRef.setTextContent(arq.getDtRef());
-        bcarq.appendChild(dtRef);
-
-        Element sisarq = doc.createElement("SISARQ");
-
-        Element asl = doc.createElement("ASLC" + tipo);
-        Element liquidTranscCred = null;
-        switch (tipo) {
-            case "027":
-                liquidTranscCred = doc.createElement("Grupo_ASLC027_LiquidTranscCred");
-                break;
-            case "029":
-                liquidTranscCred = doc.createElement("Grupo_ASLC029_LiquidTranscDeb");
-                break;
             case "031":
-                liquidTranscCred = doc.createElement("Grupo_ASLC031_LiquidTranscCarts");
-                break;
-            case "023":
-                liquidTranscCred = doc.createElement("Grupo_ASLC023_LiquidTranscCred");
+                identPartAdmtd = doc.createElement("IdentdPartAdmtd");
                 break;
         }
-        Credenciador cdr = arq.getCredenciador();
-
-        Element identPartPrincipal = doc.createElement("IdentdPartPrincipal");
-        identPartPrincipal.setTextContent(cdr.getIdentdPartPrincipal());
-        liquidTranscCred.appendChild(identPartPrincipal);
-
-        Element identPartAdmtd = doc.createElement("IdentPartAdmtd");
         identPartAdmtd.setTextContent(cdr.getIdentPartAdmtd());
-        liquidTranscCred.appendChild(identPartAdmtd);
+        liquidTransc.appendChild(identPartAdmtd);
 
         Element CNPJBaseCreddr = doc.createElement("CNPJBaseCreddr");
         CNPJBaseCreddr.setTextContent(cdr.getCNPJBaseCreddr());
-        liquidTranscCred.appendChild(CNPJBaseCreddr);
+        liquidTransc.appendChild(CNPJBaseCreddr);
 
         Element CNPJCreddr = doc.createElement("CNPJCreddr");
         CNPJCreddr.setTextContent(cdr.getCNPJCreddr());
-        liquidTranscCred.appendChild(CNPJCreddr);
+        liquidTransc.appendChild(CNPJCreddr);
 
         Element ISPBIFDevdr = doc.createElement("ISPBIFDevdr");
         ISPBIFDevdr.setTextContent(cdr.getISPBIFDevdr());
-        liquidTranscCred.appendChild(ISPBIFDevdr);
+        liquidTransc.appendChild(ISPBIFDevdr);
 
         Element ISPBIFCredr = doc.createElement("ISPBIFCredr");
         ISPBIFCredr.setTextContent(cdr.getISPBIFCredr());
-        liquidTranscCred.appendChild(ISPBIFCredr);
+        liquidTransc.appendChild(ISPBIFCredr);
 
         Element agCreddr = doc.createElement("AgCreddr");
         agCreddr.setTextContent(cdr.getAgCreddr());
-        liquidTranscCred.appendChild(agCreddr);
+        liquidTransc.appendChild(agCreddr);
 
         Element ctCreddr = doc.createElement("CtCreddr");
         ctCreddr.setTextContent(cdr.getCtCreddr());
-        liquidTranscCred.appendChild(ctCreddr);
+        liquidTransc.appendChild(ctCreddr);
 
-        Element nomeCreddr = doc.createElement("NomeCreddr");
-        nomeCreddr.setTextContent(cdr.getNomeCreddr());
-        liquidTranscCred.appendChild(nomeCreddr);
+        Element nomCreddr = doc.createElement("NomCreddr");
+        nomCreddr.setTextContent(cdr.getNomCreddr());
+        liquidTransc.appendChild(nomCreddr);
 
         //ToDo
         //Ver quando o arquivo deve gerar centralizadora ou nao.
-        if (erros.isEmpty()) {
+        if (erros.isEmpty() && (cdr.getCentralizadoras() == null || cdr.getCentralizadoras().isEmpty())) {
             Element codOcorc = doc.createElement("CodOcorc");
             codOcorc.setTextContent("01");
-            liquidTranscCred.appendChild(codOcorc);
+            liquidTransc.appendChild(codOcorc);
         } else {
 
             for (Centralizadora c : cdr.getCentralizadoras()) {
@@ -4614,9 +4535,22 @@ public class geradorArquivo extends JFrame {
                         codInstitdrArrajPgto.setTextContent(p.getCodInstitdrArrajPgto().getDominio());
                         pontoVenda.appendChild(codInstitdrArrajPgto);
                     }
-                    Element tpProdLiquidCred = doc.createElement("TpProdLiquidCred");
-                    tpProdLiquidCred.setTextContent(p.getTpProdLiquidCred());
-                    pontoVenda.appendChild(tpProdLiquidCred);
+                    Element tpProdLiquid = doc.createElement("TpProdLiquidCred");
+                    switch (tipo) {
+                        case "027":
+                            tpProdLiquid = doc.createElement("TpProdLiquidCred");
+                            tpProdLiquid.setTextContent(p.getTpProdLiquidCred());
+                            break;
+                        case "029":
+                            tpProdLiquid = doc.createElement("TpProdLiquidDeb");
+                            tpProdLiquid.setTextContent(p.getTpProdLiquidDeb());
+                            break;
+                        case "031":
+                            tpProdLiquid = doc.createElement("TpProdLiquidCarts");
+                            tpProdLiquid.setTextContent(p.getTpProdLiquidCarts());
+                            break;
+                    }
+                    pontoVenda.appendChild(tpProdLiquid);
 
                     Element indFormaTransf = doc.createElement("IndrFormaTransf");
                     indFormaTransf.setTextContent(p.getIndrFormaTransf());
@@ -4636,10 +4570,10 @@ public class geradorArquivo extends JFrame {
 
                     centerlz.appendChild(pontoVenda);
                 }
-                liquidTranscCred.appendChild(centerlz);
+                liquidTransc.appendChild(centerlz);
             }
         }
-        asl.appendChild(liquidTranscCred);
+        asl.appendChild(liquidTransc);
         sisarq.appendChild(asl);
         rootNode.appendChild(bcarq);
         rootNode.appendChild(sisarq);
@@ -4720,7 +4654,7 @@ public class geradorArquivo extends JFrame {
         cdr.setAgCreddr("3333");
         cdr.setCtCreddr("0009993331116");
         //NOme ate 80 posicoes.
-        cdr.setNomeCreddr("NOME DO CREDENCIADOR");
+        cdr.setNomCreddr("NOME DO CREDENCIADOR");
         return cdr;
     }
 
@@ -4742,6 +4676,8 @@ public class geradorArquivo extends JFrame {
                 p.setCodInstitdrArrajPgto(EnumInstituidorArranjoPagamento.VISA);
                 //01 - Cartao de credito, 02 - Ajustes credito
                 p.setTpProdLiquidCred("01");
+                p.setTpProdLiquidCarts("01");
+                p.setTpProdLiquidDeb("01");
                 p.setIndrFormaTransf("3");
                 //Código para BRL
                 p.setCodMoeda("790");
@@ -5040,11 +4976,25 @@ public class geradorArquivo extends JFrame {
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroCodInstitdrArrajPgto().getDescricao() + "\n");
                             }
                             if (pv.getTpProdLiquidCred() != null) {
-                                texto = texto + ("======Tipo de Produto Liquidacao de credito -> " + pv.getTpProdLiquidCred() + "\n");
+                                texto = texto + ("======Tipo de Produto Liquidacao de CREDITO -> " + pv.getTpProdLiquidCred() + "\n");
                             }
                             if (pv.getCodigoErroTpProdLiquidCred() != null) {
                                 texto = texto + ("Cod Erro --->" + pv.getCodigoErroTpProdLiquidCred() + "\n");
                                 texto = texto + ("Descricao Erro --->" + pv.getCodigoErroTpProdLiquidCred().getDescricao() + "\n");
+                            }
+                            if (pv.getTpProdLiquidDeb() != null) {
+                                texto = texto + ("======Tipo de Produto Liquidacao de DEBITO -> " + pv.getTpProdLiquidDeb() + "\n");
+                            }
+                            if (pv.getCodigoErroTpProdLiquidDeb() != null) {
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroTpProdLiquidDeb() + "\n");
+                                texto = texto + ("Descricao Erro --->" + pv.getCodigoErroTpProdLiquidDeb().getDescricao() + "\n");
+                            }
+                            if (pv.getTpProdLiquidCarts() != null) {
+                                texto = texto + ("======Tipo de Pro. Liqu.ANTECIPACOES DE RECEBIVEIS -> " + pv.getTpProdLiquidCred() + "\n");
+                            }
+                            if (pv.getCodigoErroTpProdLiquidCarts() != null) {
+                                texto = texto + ("Cod Erro --->" + pv.getCodigoErroTpProdLiquidCarts() + "\n");
+                                texto = texto + ("Descricao Erro --->" + pv.getCodigoErroTpProdLiquidCarts().getDescricao() + "\n");
                             }
                             if (pv.getIndrFormaTransf() != null) {
                                 texto = texto + ("======Forma de transferencia -> " + pv.getIndrFormaTransf() + "\n");
