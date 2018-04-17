@@ -7,6 +7,7 @@ package com.jaks.cip.model;
 
 import com.jaks.cip.enuns.EnumCodigoErro;
 import com.jaks.cip.enuns.EnumServicosEventos;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 
@@ -56,6 +57,8 @@ public class Arquivo {
     private EnumCodigoErro codigoErroDtRef;
 
     private EnumServicosEventos servicosEventos;
+
+    private List<Credenciador> credenciadores;
 
     private Credenciador credenciador;
 
@@ -129,6 +132,14 @@ public class Arquivo {
 
     public void setDtRef(String DtRef) {
         this.DtRef = DtRef;
+    }
+
+    public List<Credenciador> getCredenciadores() {
+        return credenciadores;
+    }
+
+    public void setCredenciadores(List<Credenciador> credenciadores) {
+        this.credenciadores = credenciadores;
     }
 
     public Credenciador getCredenciador() {

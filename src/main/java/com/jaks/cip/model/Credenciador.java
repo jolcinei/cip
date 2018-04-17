@@ -9,7 +9,6 @@ import com.jaks.cip.enuns.EnumCodigoErro;
 import com.jaks.cip.enuns.EnumCodigoOcorrencia;
 import com.jaks.cip.enuns.EnumRetornoRequisicao;
 import com.jaks.cip.enuns.EnumTipoRetornado;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -29,8 +28,8 @@ public class Credenciador {
     private String IdentdPartPrincipal;
 
     //CNPJ participante administrado
-    @Column(name = "IdentPartAdmtd", length = 14)
-    private String IdentPartAdmtd;
+    @Column(name = "IdentdPartAdmtd", length = 14)
+    private String IdentdPartAdmtd;
 
     //CNPJ base do credenciador com 8 posições.
     @Column(name = "CNPJBaseCreddr", length = 8)
@@ -64,7 +63,23 @@ public class Credenciador {
     @Column(name = "SitRetReq", length = 1)
     private EnumRetornoRequisicao SitRetReq;
 
+    //formado sugerido data yyyyMMdd + sequencia de 12 posições.
+    //Domicilio
+    @Column(name = "NumCtrlIF", length = 20)
+    private String NumCtrlIF;
+
+    //formado sugerido data yyyyMMdd + sequencia de 12 posições.
+    //Domicilio
+    @Column(name = "NumCtrlIFActo", length = 20)
+    private String NumCtrlIFActo;
+
+    //formado sugerido data yyyyMMdd + sequencia de 12 posições.
+    //Domicilio
+    @Column(name = "NumCtrlCIPActo", length = 20)
+    private String NumCtrlCIPActo;
+
     //Código da Ocorência 2 posições.
+    //Domicilio
     @Column(name = "CodOcorc", length = 2)
     private EnumCodigoOcorrencia CodOcorc;
 
@@ -112,12 +127,12 @@ public class Credenciador {
         this.IdentdPartPrincipal = IdentdPartPrincipal;
     }
 
-    public String getIdentPartAdmtd() {
-        return IdentPartAdmtd;
+    public String getIdentdPartAdmtd() {
+        return IdentdPartAdmtd;
     }
 
-    public void setIdentPartAdmtd(String IdentPartAdmtd) {
-        this.IdentPartAdmtd = IdentPartAdmtd;
+    public void setIdentdPartAdmtd(String IdentdPartAdmtd) {
+        this.IdentdPartAdmtd = IdentdPartAdmtd;
     }
 
     public String getCNPJBaseCreddr() {
@@ -206,6 +221,30 @@ public class Credenciador {
 
     public void setDtHrManut(DateTime DtHrManut) {
         this.DtHrManut = DtHrManut;
+    }
+
+    public String getNumCtrlIF() {
+        return NumCtrlIF;
+    }
+
+    public void setNumCtrlIF(String NumCtrlIF) {
+        this.NumCtrlIF = NumCtrlIF;
+    }
+
+    public String getNumCtrlIFActo() {
+        return NumCtrlIFActo;
+    }
+
+    public void setNumCtrlIFActo(String NumCtrlIFActo) {
+        this.NumCtrlIFActo = NumCtrlIFActo;
+    }
+
+    public String getNumCtrlCIPActo() {
+        return NumCtrlCIPActo;
+    }
+
+    public void setNumCtrlCIPActo(String NumCtrlCIPActo) {
+        this.NumCtrlCIPActo = NumCtrlCIPActo;
     }
 
     public EnumTipoRetornado getEnumTipoRetornado() {
