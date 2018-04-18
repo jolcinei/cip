@@ -138,7 +138,7 @@ public class geradorArquivo extends JFrame {
 
         //Seta as credenciadoras vinculadas.
         credenciador.setCentralizadoras(centralizadoras);
-        EnumServicosEventos tipo = EnumServicosEventos.ASLC029;
+        EnumServicosEventos tipo = EnumServicosEventos.ASLC027;
         //Auto incrementar a sequencia, sendo que nao pode haver a mesma sequencia de envio no mesmo dia.
         //Sequencia deve ter 5 posicoes.
         String sequencia = "00001";
@@ -196,6 +196,12 @@ public class geradorArquivo extends JFrame {
                 } else if (part.contains("025")) {
                     arq = lerArquivoXML025RET(file.getAbsolutePath());
                     arq.setServicosEventos(EnumServicosEventos.ASLC025);
+                } else if (part.contains("032")) {
+                    arq = lerArquivoXML032(file.getAbsolutePath());
+                    arq.setServicosEventos(EnumServicosEventos.ASLC032);
+                } else if (part.contains("033")) {
+                    arq = lerArquivoXML033RET(file.getAbsolutePath());
+                    arq.setServicosEventos(EnumServicosEventos.ASLC033);
                 }
 
                 final String resultadoArquivoXML = resultadoArquivoXML(arq);
@@ -348,7 +354,7 @@ public class geradorArquivo extends JFrame {
                                     //Pega atributo de erro no arquivo
                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                         if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                            cred.setCodigoErroIdentPartAdmtd(codigoErro);
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
                                         }
                                     }
                                     cred.setIdentdPartAdmtd(elFilho.getTextContent());
@@ -357,7 +363,7 @@ public class geradorArquivo extends JFrame {
                                     //Pega atributo de erro no arquivo
                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                         if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                            cred.setCodigoErroIdentPartAdmtd(codigoErro);
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
                                         }
                                     }
                                     cred.setIdentdPartAdmtd(elFilho.getTextContent());
@@ -1524,7 +1530,7 @@ public class geradorArquivo extends JFrame {
                                     //Pega atributo de erro no arquivo
                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                         if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                            cred.setCodigoErroIdentPartAdmtd(codigoErro);
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
                                         }
                                     }
                                     cred.setIdentdPartAdmtd(elFilho.getTextContent());
@@ -1533,7 +1539,7 @@ public class geradorArquivo extends JFrame {
                                     //Pega atributo de erro no arquivo
                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                         if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                            cred.setCodigoErroIdentPartAdmtd(codigoErro);
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
                                         }
                                     }
                                     cred.setIdentdPartAdmtd(elFilho.getTextContent());
@@ -2700,7 +2706,7 @@ public class geradorArquivo extends JFrame {
                                     //Pega atributo de erro no arquivo
                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                         if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                            cred.setCodigoErroIdentPartAdmtd(codigoErro);
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
                                         }
                                     }
                                     cred.setIdentdPartAdmtd(elFilho.getTextContent());
@@ -2709,7 +2715,7 @@ public class geradorArquivo extends JFrame {
                                     //Pega atributo de erro no arquivo
                                     for (EnumCodigoErro codigoErro : codigoErros) {
                                         if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
-                                            cred.setCodigoErroIdentPartAdmtd(codigoErro);
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
                                         }
                                     }
                                     cred.setIdentdPartAdmtd(elFilho.getTextContent());
@@ -4310,6 +4316,285 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="[DOMICILIO] Ler arquivo ASLC032 SLC(CIP) --> Domicilio">
+    public static Arquivo lerArquivoXML032(String absolutePath) {
+        Arquivo arquivoret = new Arquivo();
+        Credenciador cred = null;
+        List<EnumCodigoErro> erros = new ArrayList<>();
+        List<Centralizadora> centralizadoras = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(absolutePath);
+
+            NodeList cabecalho = doc.getElementsByTagName("BCARQ");
+
+            int tamanhoCabecalho = cabecalho.getLength();
+
+            for (int a = 0; a < tamanhoCabecalho; a++) {
+                Node nodeCabecalho = cabecalho.item(a);
+                if (nodeCabecalho.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList itensCabecalho = nodeCabecalho.getChildNodes();
+                    int tamanhoFilhosCabecalho = itensCabecalho.getLength();
+                    for (int b = 0; b < tamanhoFilhosCabecalho; b++) {
+                        Node noCabFilho = itensCabecalho.item(b);
+
+                        if (noCabFilho.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elCabFilho = (Element) noCabFilho;
+
+                            switch (elCabFilho.getTagName()) {
+                                case "NomArq":
+                                    //ToDo
+                                    //Ler o arquivo e fazer os métodos validando cada campo
+                                    //Necessário dados pegos de um banco de dados.
+                                    if (elCabFilho.getTextContent().isEmpty()) {
+                                        erros.add(EnumCodigoErro.EGEN0043);
+                                        arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
+                                    }
+                                    arquivoret.setNomArq(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlEmis":
+                                    arquivoret.setNumCtrlEmis(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlDestOr":
+                                    arquivoret.setNumCtrlDestOr(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBEmissor":
+                                    arquivoret.setISPBEmissor(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBDestinatario":
+                                    arquivoret.setISPBDestinatario(elCabFilho.getTextContent());
+                                    break;
+                                case "DtHrArq":
+                                    arquivoret.setDtHrArq(elCabFilho.getTextContent());
+                                    break;
+                                case "DtRef":
+                                    arquivoret.setDtRef(elCabFilho.getTextContent());
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+            NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC032_LiquidTranscCarts");
+
+            int tamanho = nodeListLiq.getLength();
+
+            for (int i = 0; i < tamanho; i++) {
+                Node noCred = nodeListLiq.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+                        Centralizadora nCentralizadora = null;
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    cred.setIdentdPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "CNPJBaseCreddr":
+                                    cred.setCNPJBaseCreddr(elFilho.getTextContent());
+                                    break;
+                                case "CNPJCreddr":
+                                    cred.setCNPJCreddr(elFilho.getTextContent());
+                                    break;
+                                case "ISPBIFDevdr":
+                                    cred.setISPBIFDevdr(elFilho.getTextContent());
+                                    break;
+                                case "ISPBIFCredr":
+                                    cred.setISPBIFCredr(elFilho.getTextContent());
+                                    break;
+                                case "AgCreddr":
+                                    cred.setAgCreddr(elFilho.getTextContent());
+                                    break;
+                                case "CtCreddr":
+                                    cred.setCtCreddr(elFilho.getTextContent());
+                                    break;
+                                case "NomeCreddr":
+                                    cred.setNomCreddr(elFilho.getTextContent());
+                                    break;
+                                /*case "SitRetReq":
+                                 List<EnumRetornoRequisicao> retornoRequisicaos = new ArrayList<>(EnumSet.allOf(EnumRetornoRequisicao.class));
+                                 for (EnumRetornoRequisicao retornoRequisicao : retornoRequisicaos) {
+                                 if (elFilho.getTextContent().equals(retornoRequisicao.getCodigo())) {
+                                 cred.setSitRetReq(retornoRequisicao);
+                                 }
+                                 }
+                                 break;
+                                 */
+                                case "Grupo_ASLC032_Centrlz":
+                                    NodeList nodeListCentr = elFilho.getChildNodes();
+                                    nCentralizadora = new Centralizadora();
+                                    List<PontoVenda> pontoVendas = new ArrayList<>();
+                                    int tamanhoFilCent = nodeListCentr.getLength();
+                                    for (int l = 0; l < tamanhoFilCent; l++) {
+                                        Node filCent = nodeListCentr.item(l);
+                                        if (filCent.getNodeType() == Node.ELEMENT_NODE) {
+                                            Element elFilhoCentf = (Element) filCent;
+                                            switch (elFilhoCentf.getTagName()) {
+//                                                case "NumCtrlCreddrCentrlz":
+//                                                    nCentralizadora.setNumCtrlCreddrCentrlz(elFilhoCentf.getTextContent());
+//                                                    break;
+                                                case "TpPessoaCentrlz":
+                                                    nCentralizadora.setTpPessoaCentrlz(elFilhoCentf.getTextContent());
+                                                    break;
+                                                case "CNPJ_CPFCentrlz":
+                                                    nCentralizadora.setCNPJ_CPFCentrlz(elFilhoCentf.getTextContent());
+                                                    break;
+                                                case "CodCentrlz":
+                                                    nCentralizadora.setCodCentrlz(elFilhoCentf.getTextContent());
+                                                    break;
+                                                case "TpCt":
+                                                    List<EnumTipoConta> listCont = new ArrayList<>(EnumSet.allOf(EnumTipoConta.class));
+                                                    for (EnumTipoConta listCont1 : listCont) {
+                                                        if (elFilhoCentf.getTextContent().equals(listCont1.getTipo())) {
+                                                            nCentralizadora.setTpCt(listCont1);
+                                                        }
+                                                    }
+                                                    break;
+                                                case "AgCentrlz":
+                                                    nCentralizadora.setAgCentrlz(elFilhoCentf.getTextContent());
+                                                    break;
+                                                case "CtCentrlz":
+                                                    nCentralizadora.setCtCentrlz(elFilhoCentf.getTextContent());
+                                                    break;
+                                                /*case "CtPgtoCentrlz":
+                                                 nCentralizadora.setCtPgtoCentrlz(elFilhoCentf.getTextContent());
+                                                 break;
+                                                 case "NumCtrlCreddrCentrlzActo":
+                                                 nCentralizadora.setNumCtrlCreddrCentrlzActo(elFilhoCentf.getTextContent());
+                                                 break;
+                                                 case "NumCtrlCIPCentrlzActo":
+                                                 nCentralizadora.setNumCtrlCIPCentrlzActo(elFilhoCentf.getTextContent());
+                                                 break;*/
+                                                case "Grupo_ASLC032_PontoVenda":
+                                                    NodeList nodeListPv = elFilhoCentf.getChildNodes();
+                                                    PontoVenda nPontoVenda = new PontoVenda();
+
+                                                    int tamanhoFilPontoVenda = nodeListPv.getLength();
+                                                    for (int w = 0; w < tamanhoFilPontoVenda; w++) {
+                                                        Node filPontoVenda = nodeListPv.item(w);
+                                                        if (filPontoVenda.getNodeType() == Node.ELEMENT_NODE) {
+                                                            Element elFilhoPontoVenda = (Element) filPontoVenda;
+                                                            switch (elFilhoPontoVenda.getTagName()) {
+                                                                case "NULiquid":
+                                                                    nPontoVenda.setNULiquid(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "NumCtrlCreddrPontoVenda":
+                                                                    nPontoVenda.setNumCtrlCreddrPontoVenda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "ISPBIFLiquidPontoVenda":
+                                                                    nPontoVenda.setISPBIFLiquidPontoVenda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "CodPontoVenda":
+                                                                    nPontoVenda.setCodPontoVenda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "NomePontoVenda":
+                                                                    nPontoVenda.setNomePontoVenda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "TpPessoaPontoVenda":
+                                                                    nPontoVenda.setTpPessoaPontoVenda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "CNPJ_CPFPontoVenda":
+                                                                    nPontoVenda.setCNPJ_CPFPontoVenda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "CodInstitdrArrajPgto":
+                                                                    List<EnumInstituidorArranjoPagamento> arranjos = new ArrayList<>(EnumSet.allOf(EnumInstituidorArranjoPagamento.class));
+                                                                    for (EnumInstituidorArranjoPagamento arranjo : arranjos) {
+                                                                        if (elFilhoPontoVenda.getTextContent().equals(arranjo.getTipo())) {
+                                                                            nPontoVenda.setCodInstitdrArrajPgto(arranjo);
+                                                                        }
+                                                                    }
+                                                                    break;
+                                                                case "TpProdLiquidCarts":
+                                                                    nPontoVenda.setTpProdLiquidDeb(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "IndrFormaTransf":
+                                                                    nPontoVenda.setIndrFormaTransf(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "CodMoeda":
+                                                                    nPontoVenda.setCodMoeda(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "DtPgto":
+                                                                    nPontoVenda.setDtPgto(elFilhoPontoVenda.getTextContent());
+                                                                    break;
+                                                                case "VlrPgto":
+                                                                    nPontoVenda.setVlrPgto(Double.parseDouble(elFilhoPontoVenda.getTextContent()));
+                                                                    break;
+                                                                case "DtHrManut":
+                                                                    String dataManut = elFilhoPontoVenda.getTextContent();
+                                                                    String[] dates = dataManut.split("T");
+                                                                    String part = dates[0];
+                                                                    String part2 = dates[1];
+                                                                    org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                                                                    DateTime dt = formatter.parseDateTime(part + " " + part2);
+                                                                    nPontoVenda.setDtHrManut(dt);
+                                                                    break;
+                                                            }
+                                                            nPontoVenda.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                                                        }
+                                                        if (!pontoVendas.contains(nPontoVenda)) {
+                                                            pontoVendas.add(nPontoVenda);
+                                                        }
+                                                    }
+                                                    nPontoVenda = null;
+                                                    nCentralizadora.setPontosVenda(pontoVendas);
+                                            }
+                                            //ToDo
+                                            //Se não houver problemas no arquivo, informaçoes inconsistentes na centralizadora
+                                            nCentralizadora.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                                        }
+                                    }
+                                    if (!centralizadoras.contains(nCentralizadora)) {
+                                        centralizadoras.add(nCentralizadora);
+                                        nCentralizadora = null;
+                                    }
+                            }
+                            //ToDo
+                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (cred != null) {
+            cred.setCentralizadoras(centralizadoras);
+        }
+        arquivoret.setCredenciador(cred);
+        String name = arquivoret.getNomArq();
+        String[] names = name.split("_");
+        String sequencia = names[3];
+        try {
+            //Se nao houver erro
+            Arquivo a = arquivoret;
+            if (erros.isEmpty()) {
+                //Definir numero unico de liquidacao
+                a.getCredenciador().setNULiquid("DfvJ0AdyYlJ47JjNiRNn");
+                //setar a ocorrencia de retorno
+                a.getCredenciador().setCodOcorc(EnumCodigoOcorrencia.C01);
+                //setar o numero da IF Domicilio
+                a.getCredenciador().setNumCtrlIF(data + "443891271442");
+            }
+            gerarArquivoRetornoProcessamentoXML(a, EnumServicosEventos.ASLC033.getCodigo(), sequencia, erros);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return arquivoret;
+    }// </editor-fold>
+
     // <editor-fold defaultstate="collapsed" desc="[DOMICILIO] Ler arquivo ASLC023RET SLC(CIP) --> Domicilio">
     public static Arquivo lerArquivoXML023RET(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
@@ -4456,9 +4741,8 @@ public class geradorArquivo extends JFrame {
     public static Arquivo lerArquivoXML025RET(String absolutePath) {
         Arquivo arquivoret = new Arquivo();
         List<Credenciador> crds = new ArrayList<>();
-        Credenciador cred = null;
+        Credenciador cred;
         List<EnumCodigoErro> erros = new ArrayList<>();
-        List<Centralizadora> centralizadoras = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -4514,16 +4798,10 @@ public class geradorArquivo extends JFrame {
                     }
                 }
             }
-            NodeList nodeListLiq = null;
 
-            nodeListLiq = doc.getElementsByTagName("Grupo_ASLC025RET_LiquidTranscDebActo");
+            NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC025RET_LiquidTranscDebActo");
 
             int tamanho = nodeListLiq.getLength();
-
-            if (tamanho <= 0) {
-                nodeListLiq = doc.getElementsByTagName("Grupo_ASLC025RET_LiquidTranscDebRecsdo");
-                tamanho = nodeListLiq.getLength();
-            }
 
             for (int i = 0; i < tamanho; i++) {
                 Node noCred = nodeListLiq.item(i);
@@ -4578,7 +4856,315 @@ public class geradorArquivo extends JFrame {
                             }
                             //ToDo
                             //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
-                            //cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                        }
+                    }
+                }
+                crds.add(cred);
+            }
+            NodeList nodeListLiqRc = doc.getElementsByTagName("Grupo_ASLC025RET_LiquidTranscDebRecsdo");
+
+            int tamanhoRc = nodeListLiqRc.getLength();
+
+            for (int i = 0; i < tamanhoRc; i++) {
+                Node noCred = nodeListLiqRc.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    cred.setIdentdPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "NumCtrlIF":
+                                    cred.setNumCtrlIF(elFilho.getTextContent());
+                                    break;
+                                case "NULiquid":
+                                    cred.setNULiquid(elFilho.getTextContent());
+                                    break;
+                                case "CodOcorc":
+                                    List<EnumCodigoOcorrencia> ocorrencias = new ArrayList<>(EnumSet.allOf(EnumCodigoOcorrencia.class));
+                                    for (EnumCodigoOcorrencia ocorrencia : ocorrencias) {
+                                        if (elFilho.getTextContent().equals(ocorrencia.getCodigo())) {
+                                            cred.setCodOcorc(ocorrencia);
+                                        }
+                                    }
+                                    break;
+                            }
+                            //ToDo
+                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.RECSDO);
+                        }
+                    }
+                }
+                crds.add(cred);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        arquivoret.setCredenciadores(crds);
+        return arquivoret;
+    }// </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="[DOMICILIO] Ler arquivo ASLC033RET SLC(CIP) --> Domicilio">
+    public static Arquivo lerArquivoXML033RET(String absolutePath) {
+        Arquivo arquivoret = new Arquivo();
+        List<Credenciador> crds = new ArrayList<>();
+        Credenciador cred;
+        List<EnumCodigoErro> erros = new ArrayList<>();
+        List<EnumCodigoErro> codigoErros = new ArrayList<>(EnumSet.allOf(EnumCodigoErro.class));
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(absolutePath);
+
+            NodeList cabecalho = doc.getElementsByTagName("BCARQ");
+
+            int tamanhoCabecalho = cabecalho.getLength();
+
+            for (int a = 0; a < tamanhoCabecalho; a++) {
+                Node nodeCabecalho = cabecalho.item(a);
+                if (nodeCabecalho.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList itensCabecalho = nodeCabecalho.getChildNodes();
+                    int tamanhoFilhosCabecalho = itensCabecalho.getLength();
+                    for (int b = 0; b < tamanhoFilhosCabecalho; b++) {
+                        Node noCabFilho = itensCabecalho.item(b);
+
+                        if (noCabFilho.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elCabFilho = (Element) noCabFilho;
+
+                            switch (elCabFilho.getTagName()) {
+                                case "NomArq":
+                                    //ToDo
+                                    //Ler o arquivo e fazer os métodos validando cada campo
+                                    //Necessário dados pegos de um banco de dados.
+                                    if (elCabFilho.getTextContent().isEmpty()) {
+                                        erros.add(EnumCodigoErro.EGEN0043);
+                                        arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
+                                    }
+                                    arquivoret.setNomArq(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlEmis":
+                                    arquivoret.setNumCtrlEmis(elCabFilho.getTextContent());
+                                    break;
+                                case "NumCtrlDestOr":
+                                    arquivoret.setNumCtrlDestOr(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBEmissor":
+                                    arquivoret.setISPBEmissor(elCabFilho.getTextContent());
+                                    break;
+                                case "ISPBDestinatario":
+                                    arquivoret.setISPBDestinatario(elCabFilho.getTextContent());
+                                    break;
+                                case "DtHrArq":
+                                    arquivoret.setDtHrArq(elCabFilho.getTextContent());
+                                    break;
+                                case "DtRef":
+                                    arquivoret.setDtRef(elCabFilho.getTextContent());
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            NodeList nodeListLiq = doc.getElementsByTagName("Grupo_ASLC033RET_LiquidTranscCartsActo");
+
+            int tamanho = nodeListLiq.getLength();
+
+            for (int i = 0; i < tamanho; i++) {
+                Node noCred = nodeListLiq.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroIdentdPartPrincipal(codigoErro);
+                                        }
+                                    }
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
+                                        }
+                                    }
+                                    cred.setIdentdPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "NumCtrlIFActo":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroNumCtrlIFActo(codigoErro);
+                                        }
+                                    }
+                                    cred.setNumCtrlIFActo(elFilho.getTextContent());
+                                    break;
+                                case "NumCtrlIF":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroNumCtrlIF(codigoErro);
+                                        }
+                                    }
+                                    cred.setNumCtrlIF(elFilho.getTextContent());
+                                    break;
+                                case "NumCtrlCIPActo":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroNumCtrlCIPActo(codigoErro);
+                                        }
+                                    }
+                                    cred.setNumCtrlCIPActo(elFilho.getTextContent());
+                                    break;
+                                case "NULiquid":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroNULiquid(codigoErro);
+                                        }
+                                    }
+                                    cred.setNULiquid(elFilho.getTextContent());
+                                    break;
+                                case "DtHrManut":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroDtHrManut(codigoErro);
+                                        }
+                                    }
+                                    String dataManut = elFilho.getTextContent();
+                                    String[] dates = dataManut.split("T");
+                                    String part = dates[0];
+                                    String part2 = dates[1];
+                                    org.joda.time.format.DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+                                    DateTime dt = formatter.parseDateTime(part + " " + part2);
+                                    cred.setDtHrManut(dt);
+                                    break;
+                                case "CodOcorc":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroCodOcorc(codigoErro);
+                                        }
+                                    }
+                                    List<EnumCodigoOcorrencia> ocorrencias = new ArrayList<>(EnumSet.allOf(EnumCodigoOcorrencia.class));
+                                    for (EnumCodigoOcorrencia ocorrencia : ocorrencias) {
+                                        if (elFilho.getTextContent().equals(ocorrencia.getCodigo())) {
+                                            cred.setCodOcorc(ocorrencia);
+                                        }
+                                    }
+                                    break;
+                            }
+                            //ToDo
+                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
+                        }
+                    }
+                }
+                crds.add(cred);
+            }
+            NodeList nodeListLiqRc = doc.getElementsByTagName("Grupo_ASLC033RET_LiquidTranscCartsRecsdo");
+
+            int tamanhoRc = nodeListLiqRc.getLength();
+
+            for (int i = 0; i < tamanhoRc; i++) {
+                Node noCred = nodeListLiqRc.item(i);
+                cred = new Credenciador();
+
+                if (noCred.getNodeType() == Node.ELEMENT_NODE) {
+
+                    NodeList nodeListCr = noCred.getChildNodes();
+                    int tamanhoFil = nodeListCr.getLength();
+                    for (int j = 0; j < tamanhoFil; j++) {
+                        Node fil = nodeListCr.item(j);
+
+                        if (fil.getNodeType() == Node.ELEMENT_NODE) {
+                            Element elFilho = (Element) fil;
+
+                            switch (elFilho.getTagName()) {
+                                case "IdentdPartPrincipal":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroIdentdPartPrincipal(codigoErro);
+                                        }
+                                    }
+                                    cred.setIdentdPartPrincipal(elFilho.getTextContent());
+                                    break;
+                                case "IdentdPartAdmtd":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroIdentdPartAdmtd(codigoErro);
+                                        }
+                                    }
+                                    cred.setIdentdPartAdmtd(elFilho.getTextContent());
+                                    break;
+                                case "NumCtrlIF":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroNumCtrlIF(codigoErro);
+                                        }
+                                    }
+                                    cred.setNumCtrlIF(elFilho.getTextContent());
+                                    break;
+                                case "NULiquid":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroNULiquid(codigoErro);
+                                        }
+                                    }
+                                    cred.setNULiquid(elFilho.getTextContent());
+                                    break;
+                                case "CodOcorc":
+                                    //Pega atributo de erro no arquivo
+                                    for (EnumCodigoErro codigoErro : codigoErros) {
+                                        if (elFilho.getAttribute("CodErro").equals(codigoErro.getCodigo())) {
+                                            cred.setCodigoErroCodOcorc(codigoErro);
+                                        }
+                                    }
+                                    List<EnumCodigoOcorrencia> ocorrencias = new ArrayList<>(EnumSet.allOf(EnumCodigoOcorrencia.class));
+                                    for (EnumCodigoOcorrencia ocorrencia : ocorrencias) {
+                                        if (elFilho.getTextContent().equals(ocorrencia.getCodigo())) {
+                                            cred.setCodOcorc(ocorrencia);
+                                        }
+                                    }
+                                    break;
+                            }
+                            //ToDo
+                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            cred.setEnumTipoRetornado(EnumTipoRetornado.RECSDO);
                         }
                     }
                 }
@@ -4947,7 +5533,7 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    // Gerar arquivo ASLC027/ASLC029/ASLC031 Credenciador --> SLC (CIP)
+    // <editor-fold defaultstate="collapsed" desc="Gerar arquivo ASLC027/ASLC029/ASLC031 Credenciador --> SLC (CIP)">    
     public static void gerarArquivoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
         //Criar uma String no formato XML para o inicio da criacao do arquivo.        
         String xmlHeader;
@@ -5172,7 +5758,7 @@ public class geradorArquivo extends JFrame {
         TransformerFactory transFactory = TransformerFactory.newInstance();
         Transformer transformer = transFactory.newTransformer();
         transformer.transform(source, result);
-    }
+    }// </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="[DOMICILIO] Gerar arquivo ASLC023/ASLC025/ASLC033 do Domicilio para SLC (CIP)">
     public static void gerarArquivoRetornoProcessamentoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
@@ -5229,7 +5815,7 @@ public class geradorArquivo extends JFrame {
                 liquidTransc = doc.createElement("Grupo_ASLC025_LiquidTranscDeb");
                 break;
             case "033":
-                liquidTransc = doc.createElement("Grupo_ASLC031_LiquidTranscCarts");
+                liquidTransc = doc.createElement("Grupo_ASLC033_LiquidTranscCarts");
                 break;
         }
 
@@ -5392,9 +5978,7 @@ public class geradorArquivo extends JFrame {
 
     public static String resultadoArquivoXML(Arquivo retornoXML) {
         if (retornoXML.getCredenciador() != null) {
-            List<Credenciador> credes =  new ArrayList<>();
-            credes.add(retornoXML.getCredenciador());
-            retornoXML.setCredenciadores(credes);
+            retornoXML.getCredenciadores().add(retornoXML.getCredenciador());
         }
         String texto = "";
         texto = texto + ("Arquivo ---------------------------------------------------------------------\n");
@@ -5470,9 +6054,9 @@ public class geradorArquivo extends JFrame {
                 if (credence.getIdentdPartAdmtd() != null) {
                     texto = texto + ("Credenciador Ident Admtd      -->" + credence.getIdentdPartAdmtd() + "\n");
                 }
-                if (credence.getCodigoErroIdentPartAdmtd() != null) {
-                    texto = texto + ("Cod Erro --->" + credence.getCodigoErroIdentPartAdmtd() + "\n");
-                    texto = texto + ("Descricao Erro --->" + credence.getCodigoErroIdentPartAdmtd().getDescricao() + "\n");
+                if (credence.getCodigoErroIdentdPartAdmtd() != null) {
+                    texto = texto + ("Cod Erro --->" + credence.getCodigoErroIdentdPartAdmtd() + "\n");
+                    texto = texto + ("Descricao Erro --->" + credence.getCodigoErroIdentdPartAdmtd().getDescricao() + "\n");
                 }
                 if (credence.getCNPJBaseCreddr() != null) {
                     texto = texto + ("CNPJBaseCreddr      -->" + credence.getCNPJBaseCreddr() + "\n");

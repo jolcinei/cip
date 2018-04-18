@@ -94,7 +94,7 @@ public class Credenciador {
 
     //Pegar os erros por cada campo do arquivo.
     private EnumCodigoErro codigoErroIdentdPartPrincipal;
-    private EnumCodigoErro codigoErroIdentPartAdmtd;
+    private EnumCodigoErro codigoErroIdentdPartAdmtd;
     private EnumCodigoErro codigoErroCNPJBaseCreddr;
     private EnumCodigoErro codigoErroCNPJCreddr;
     private EnumCodigoErro codigoErroISPBIFDevdr;
@@ -106,6 +106,9 @@ public class Credenciador {
     private EnumCodigoErro codigoErroCodOcorc;
     private EnumCodigoErro codigoErroNULiquid;
     private EnumCodigoErro codigoErroDtHrManut;
+    private EnumCodigoErro codigoErroNumCtrlIFActo;
+    private EnumCodigoErro codigoErroNumCtrlIF;
+    private EnumCodigoErro codigoErroNumCtrlCIPActo;
 
     private EnumTipoRetornado enumTipoRetornado;
 
@@ -263,12 +266,28 @@ public class Credenciador {
         this.codigoErroIdentdPartPrincipal = codigoErroIdentdPartPrincipal;
     }
 
-    public EnumCodigoErro getCodigoErroIdentPartAdmtd() {
-        return codigoErroIdentPartAdmtd;
+    public EnumCodigoErro getCodigoErroIdentdPartAdmtd() {
+        return codigoErroIdentdPartAdmtd;
     }
 
-    public void setCodigoErroIdentPartAdmtd(EnumCodigoErro codigoErroIdentPartAdmtd) {
-        this.codigoErroIdentPartAdmtd = codigoErroIdentPartAdmtd;
+    public void setCodigoErroIdentdPartAdmtd(EnumCodigoErro codigoErroIdentdPartAdmtd) {
+        this.codigoErroIdentdPartAdmtd = codigoErroIdentdPartAdmtd;
+    }
+
+    public EnumCodigoErro getCodigoErroNumCtrlIF() {
+        return codigoErroNumCtrlIF;
+    }
+
+    public void setCodigoErroNumCtrlIF(EnumCodigoErro codigoErroNumCtrlIF) {
+        this.codigoErroNumCtrlIF = codigoErroNumCtrlIF;
+    }
+
+    public EnumCodigoErro getCodigoErroNumCtrlCIPActo() {
+        return codigoErroNumCtrlCIPActo;
+    }
+
+    public void setCodigoErroNumCtrlCIPActo(EnumCodigoErro codigoErroNumCtrlCIPActo) {
+        this.codigoErroNumCtrlCIPActo = codigoErroNumCtrlCIPActo;
     }
 
     public EnumCodigoErro getCodigoErroCNPJBaseCreddr() {
@@ -357,6 +376,14 @@ public class Credenciador {
 
     public void setCodigoErroDtHrManut(EnumCodigoErro codigoErroDtHrManut) {
         this.codigoErroDtHrManut = codigoErroDtHrManut;
+    }
+
+    public EnumCodigoErro getCodigoErroNumCtrlIFActo() {
+        return codigoErroNumCtrlIFActo;
+    }
+
+    public void setCodigoErroNumCtrlIFActo(EnumCodigoErro codigoErroNumCtrlIFActo) {
+        this.codigoErroNumCtrlIFActo = codigoErroNumCtrlIFActo;
     }
 
     public List<Centralizadora> getCentralizadoras() {

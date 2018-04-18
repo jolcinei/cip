@@ -27,11 +27,11 @@ public enum EnumServicosEventos implements Serializable {
     //Domicilio para a CIP
     ASLC023("023", "IF Domicilio informa o retorno do processamento das informacoes com liquidacoes das transacoes de cartoes de CREDITO."),
     ASLC025("025", "IF Domicilio informa o retorno do processamento das informacoes com liquidacoes das transacoes de cartoes de DEBITO."),
-    ASLC033("022", "IF Domicilio informa o retorno do processamento das informacoes com liquidacoes das antecipacoes de recebiveis de cartoes de pagamento."),
+    ASLC033("033", "IF Domicilio informa o retorno do processamento das informacoes com liquidacoes das antecipacoes de recebiveis de cartoes de pagamento."),
     //CIP para Domicilio    
     ASLC022("022", "SLC informa as liquidações das transações de cartões de crédito para IF Domicilio."),
     ASLC024("024", "SLC informa as liquidações das transações de cartões de debito para IF Domicilio."),
-    ASLC032("022", "SLC informa as liquidações das transações de antecipacoes de recebiveis de cartoes de pagamento para IF Domicilio.");
+    ASLC032("032", "SLC informa as liquidações das transações de antecipacoes de recebiveis de cartoes de pagamento para IF Domicilio.");
 
     private String codigo;
 

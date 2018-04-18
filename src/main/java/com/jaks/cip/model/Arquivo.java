@@ -7,6 +7,7 @@ package com.jaks.cip.model;
 
 import com.jaks.cip.enuns.EnumCodigoErro;
 import com.jaks.cip.enuns.EnumServicosEventos;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
@@ -58,7 +59,7 @@ public class Arquivo {
 
     private EnumServicosEventos servicosEventos;
 
-    private List<Credenciador> credenciadores;
+    private List<Credenciador> credenciadores = new ArrayList<>();
 
     private Credenciador credenciador;
 

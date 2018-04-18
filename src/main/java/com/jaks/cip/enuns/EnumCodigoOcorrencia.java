@@ -81,4 +81,9 @@ public enum EnumCodigoOcorrencia implements Serializable {
         this.regImpactados = regImpactados;
     }
 
+    @Override
+    public String toString() {
+        return getDescricao();
+    }
+
 }
