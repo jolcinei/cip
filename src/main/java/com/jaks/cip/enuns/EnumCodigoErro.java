@@ -5,6 +5,7 @@
  */
 package com.jaks.cip.enuns;
 
+import java.awt.Font;
 import java.io.Serializable;
 
 /**
@@ -18,7 +19,7 @@ public enum EnumCodigoErro implements Serializable {
     ESLC0007("ESLC0007", "CPF ou CNPJ Inválido"),
     ESLC0029("ESLC0029", "Requisicao enviada fora do horario"),
     ESLC0041("ESLC0041", "Grade horaria nao cadastrada"),
-    ESLC0042("ESLC0042", "Não existe adesao para essa funcionalidade"),    
+    ESLC0042("ESLC0042", "Não existe adesao para essa funcionalidade"),
     ESLC0088("ESLC0088", "Tipo de Pessoa Centralizadora fora do domínio"),
     ESLC0089("ESLC0089", "Código da Moeda fora do domínio"),
     ESLC0090("ESLC0090", "Tipo de Pessoa Ponto de Venda fora do domínio"),
@@ -44,7 +45,7 @@ public enum EnumCodigoErro implements Serializable {
     ESLC0118("ESLC0118", "Participante não cadastrado no SLC"),
     ESLC0119("ESLC0119", "Participante Administrado não é administrado pelo Participante Principal"),
     ESLC0120("ESLC0120", "Informar os campos Agencia e Conta Centralizadora"),
-    ESLC0121("ESLC0121", "Tag Tipo Conta não informada"),    
+    ESLC0121("ESLC0121", "Tag Tipo Conta não informada"),
     ESLC0122("ESLC0122", "ISPB informado não possui relacionamento com o Credenciador"),
     ESLC0123("ESLC0123", "Participante Administrado não aderiu a funcionalidade"),
     ESLC0124("ESLC0124", "Tipo de Conta informada inativa"),
@@ -93,7 +94,7 @@ public enum EnumCodigoErro implements Serializable {
     }
 
     public String getDescricao() {
-        return descricao;
+        return descricao.toUpperCase();
     }
 
     public void setDescricao(String descricao) {

@@ -21,11 +21,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu.Separator;
 import javax.swing.JScrollPane;
@@ -61,11 +64,13 @@ public class geradorArquivo extends JFrame {
     private JMenuBar jMenuBar1;
     private JMenuItem jMenuItem1;
     private JMenuItem jMenuItem2;
+    private JMenuItem jMenuItem3;
     private Separator jSeparator1;
     private JTextArea textArea;
     private JScrollPane jScrollPane1;
     private JFileChooser fileChooser;
     private JPanel panel;
+    static int seq = 1;
 
     public geradorArquivo() {
         iniciarComponentes();
@@ -83,12 +88,13 @@ public class geradorArquivo extends JFrame {
         jMenu1 = new JMenu();
         jMenuItem1 = new JMenuItem();
         jMenuItem2 = new JMenuItem();
+        jMenuItem3 = new JMenuItem();
         jSeparator1 = new Separator();
         fileChooser = new JFileChooser();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         setBounds(10, 10, 800, 600);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         panel.setLayout(null);
         setContentPane(panel);
         textArea.setEditable(false);
@@ -107,6 +113,28 @@ public class geradorArquivo extends JFrame {
             }
         });
         jMenu1.add(jMenuItem1);
+        jMenuItem3.setText("Gerar Arquivo Credenciador");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] possibilities = {EnumServicosEventos.ASLC027, EnumServicosEventos.ASLC029, EnumServicosEventos.ASLC031};
+                EnumServicosEventos s = (EnumServicosEventos) JOptionPane.showInputDialog(
+                        null,
+                        "Selecione o tipo de arquivo a ser gerado",
+                        "Tipo de arquivo Credenciador",
+                        JOptionPane.PLAIN_MESSAGE, null,
+                        possibilities,
+                        EnumServicosEventos.ASLC027);
+                if ((s != null)) {
+                    try {
+                        gerarArquivoCredenciador(s);
+                    } catch (Exception ex) {
+                        Logger.getLogger(geradorArquivo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        jMenu1.add(jMenuItem3);
         jMenu1.add(jSeparator1);
         jMenuItem2.setText("Sair");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -129,7 +157,13 @@ public class geradorArquivo extends JFrame {
                 new geradorArquivo().setVisible(true);
             }
         });
+        //Faz a leitura de um arquivo XML modelo.
+        //Arquivo retornoXML = lerArquivoXML027RET("D:\\Projetos\\Webtik\\CIP\\ASLC027\\Sucesso\\ASLC027_11111111_20170522_00001_RET.xml");
+        //Imprime o resultado na tela.
+        //resultadoArquivoXML(retornoXML);
+    }
 
+    public static void gerarArquivoCredenciador(EnumServicosEventos s) throws Exception {
         //inicial sem executavel.
         Credenciador credenciador = gerarDadosCredenciador();
 
@@ -138,19 +172,15 @@ public class geradorArquivo extends JFrame {
 
         //Seta as credenciadoras vinculadas.
         credenciador.setCentralizadoras(centralizadoras);
-        EnumServicosEventos tipo = EnumServicosEventos.ASLC027;
         //Auto incrementar a sequencia, sendo que nao pode haver a mesma sequencia de envio no mesmo dia.
         //Sequencia deve ter 5 posicoes.
-        String sequencia = "00001";
+        String sequencia = String.format("%05d", seq);
         //Gera cabecalho do arquivo a ser enviado
-        Arquivo arquivo = gerarDadosArquivo("ASCL" + tipo + "_" + credenciador.getCNPJBaseCreddr() + "_" + data + "_" + sequencia, tipo);
+        Arquivo arquivo = gerarDadosArquivo("ASCL" + s + "_" + credenciador.getCNPJBaseCreddr() + "_" + data + "_" + sequencia, s);
         arquivo.setCredenciador(credenciador);
 
-        gerarArquivoXML(arquivo, tipo.getCodigo(), sequencia, new ArrayList<EnumCodigoErro>());
-        //Faz a leitura de um arquivo XML modelo.
-        Arquivo retornoXML = lerArquivoXML027RET("D:\\Projetos\\Webtik\\CIP\\ASLC027\\Sucesso\\ASLC027_11111111_20170522_00001_RET.xml");
-        //Imprime o resultado na tela.
-        resultadoArquivoXML(retornoXML);
+        gerarArquivoXML(arquivo, s.getCodigo(), sequencia, new ArrayList<EnumCodigoErro>());
+        seq = seq + 1;
     }
 
     private void selecionarArquivo(java.awt.event.ActionEvent evt) {
@@ -3747,6 +3777,8 @@ public class geradorArquivo extends JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="[DOMICILIO] Ler arquivo ASLC022 SLC(CIP) --> Domicilio">
     public static Arquivo lerArquivoXML022(String absolutePath) {
+        //Nao tratados os erros pois se os arquivos estao vindo da CIP subentende-se que estejam corretos
+        //Se nao, realizar a tratativa de erros campo a campo. 
         Arquivo arquivoret = new Arquivo();
         Credenciador cred = null;
         List<EnumCodigoErro> erros = new ArrayList<>();

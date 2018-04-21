@@ -236,8 +236,16 @@ public class PontoVenda {
         return VlrPgto;
     }
 
-    public void setVlrPgto(double VlrPgto) {
-        this.VlrPgto = VlrPgto;
+    public void setVlrPgto(double vlrPgto) {
+        if (vlrPgto < 1000000.0) {
+            if (vlrPgto > 0) {
+                this.VlrPgto = vlrPgto;
+            } else {
+                this.setCodigoErroVlrPgto(EnumCodigoErro.ESLC0117);
+            }
+        } else {
+            this.setCodigoErroVlrPgto(EnumCodigoErro.ESLC0149);
+        }
     }
 
     public String getNumCtrlCreddrPontoVendaActo() {
