@@ -62,6 +62,10 @@ public class Arquivo {
     private List<Credenciador> credenciadores = new ArrayList<>();
 
     private Credenciador credenciador;
+    
+    //Mensagem de Teste de conexao
+    @Column(name = "MsgECO", length = 50)
+    private String MsgECO;
 
     public int getId() {
         return id;
@@ -133,6 +137,14 @@ public class Arquivo {
 
     public void setDtRef(String DtRef) {
         this.DtRef = DtRef;
+    }
+
+    public String getMsgECO() {
+        return MsgECO;
+    }
+
+    public void setMsgECO(String MsgECO) {
+        this.MsgECO = MsgECO;
     }
 
     public List<Credenciador> getCredenciadores() {

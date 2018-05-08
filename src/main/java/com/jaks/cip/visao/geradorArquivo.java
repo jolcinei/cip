@@ -1,3 +1,4 @@
+package com.jaks.cip.visao;
 
 import com.jaks.cip.enuns.EnumCodigoErro;
 import com.jaks.cip.enuns.EnumCodigoOcorrencia;
@@ -15,6 +16,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +27,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -65,6 +70,9 @@ public class geradorArquivo extends JFrame {
     private JMenuItem jMenuItem1;
     private JMenuItem jMenuItem2;
     private JMenuItem jMenuItem3;
+    private JMenuItem jMenuItem4;
+    private JMenuItem jMenuItem5;
+    private JMenuItem jMenuItem6;
     private Separator jSeparator1;
     private JTextArea textArea;
     private JScrollPane jScrollPane1;
@@ -72,14 +80,13 @@ public class geradorArquivo extends JFrame {
     private JPanel panel;
     static int seq = 1;
 
-    public geradorArquivo() {
+    public geradorArquivo() throws NoSuchAlgorithmException, NoSuchPaddingException {
         iniciarComponentes();
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Aplicação executavel">
+    // <editor-fold defaultstate="collapsed" desc="AplicaÃ§Ã£o executavel">
     private void iniciarComponentes() {
-        //setSize(800, 600);
         setLocationRelativeTo(null);
         panel = new JPanel();
         textArea = new JTextArea();
@@ -89,6 +96,9 @@ public class geradorArquivo extends JFrame {
         jMenuItem1 = new JMenuItem();
         jMenuItem2 = new JMenuItem();
         jMenuItem3 = new JMenuItem();
+        jMenuItem4 = new JMenuItem();
+        jMenuItem5 = new JMenuItem();
+        jMenuItem6 = new JMenuItem();
         jSeparator1 = new Separator();
         fileChooser = new JFileChooser();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -135,6 +145,36 @@ public class geradorArquivo extends JFrame {
             }
         });
         jMenu1.add(jMenuItem3);
+        jMenuItem4.setText("Gerar Arquivo Teste de ConexÃ£o");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Arquivo s = gerarDadosArquivo("AGEN001", EnumServicosEventos.ASLC027);
+                    gerarTesteConexaoAGEN(s);
+                } catch (Exception ex) {
+                    Logger.getLogger(geradorArquivo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        });
+        jMenu1.add(jMenuItem4);
+        jMenuItem5.setText("Compactar arquivo");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selecionarArquivo();
+            }
+        });
+        jMenu1.add(jMenuItem5);
+        jMenuItem6.setText("Descriptografar arquivo");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selecionarArquivoCriptografado();
+            }
+        });
+        jMenu1.add(jMenuItem6);
         jMenu1.add(jSeparator1);
         jMenuItem2.setText("Sair");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -154,7 +194,13 @@ public class geradorArquivo extends JFrame {
         //Aplicativo executavel.
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new geradorArquivo().setVisible(true);
+                try {
+                    new geradorArquivo().setVisible(true);
+                } catch (NoSuchAlgorithmException ex) {
+                    Logger.getLogger(geradorArquivo.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NoSuchPaddingException ex) {
+                    Logger.getLogger(geradorArquivo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         //Faz a leitura de um arquivo XML modelo.
@@ -163,7 +209,7 @@ public class geradorArquivo extends JFrame {
         //resultadoArquivoXML(retornoXML);
     }
 
-    public static void gerarArquivoCredenciador(EnumServicosEventos s) throws Exception {
+    public void gerarArquivoCredenciador(EnumServicosEventos s) throws Exception {
         //inicial sem executavel.
         Credenciador credenciador = gerarDadosCredenciador();
 
@@ -181,6 +227,51 @@ public class geradorArquivo extends JFrame {
 
         gerarArquivoXML(arquivo, s.getCodigo(), sequencia, new ArrayList<EnumCodigoErro>());
         seq = seq + 1;
+    }
+
+    private void selecionarArquivo() {
+        int returnVal = fileChooser.showOpenDialog(this);
+        Auxiliar aux = new Auxiliar();
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                String nomeArqu = file.getAbsolutePath();
+                aux.compactarParaGZip(nomeArqu, nomeArqu + ".gz");
+                JOptionPane.showMessageDialog(this, "Arquivo gerado com Sucesso\n" + nomeArqu + ".gz");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Problemas ao acessar o arquivo: " + file.getAbsolutePath());
+            }
+        } else {
+            System.out.println("Cancelado pelo usuario.");
+        }
+    }
+
+    private void selecionarArquivoCriptografado() {
+        int returnVal = fileChooser.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                CriptografiaAssimetrica ac = new CriptografiaAssimetrica();
+                //PrivateKey privateKey = ac.getPrivate("D:\\xml\\privateKey");
+                CriptografiaAES aES = new CriptografiaAES();
+                PublicKey publicKey = ac.getPublic("D:\\xml\\publicKey");
+
+                if (file.exists()) {
+                    aES.descriptografarRSAcomAES(publicKey, file.getAbsolutePath());
+                    //ac.decryptFile(ac.getFileInBytes(file), file, publicKey);
+                } else {
+                    System.out.println("Arquivo criptografado não existe");
+                }
+                JOptionPane.showMessageDialog(this, "Arquivo descriptografado com Sucesso\n" + file.getAbsolutePath());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Problemas ao acessar o arquivo: " + file.getAbsolutePath());
+            }
+        } else {
+            System.out.println("Cancelado pelo usuario.");
+        }
     }
 
     private void selecionarArquivo(java.awt.event.ActionEvent evt) {
@@ -3807,8 +3898,7 @@ public class geradorArquivo extends JFrame {
                             switch (elCabFilho.getTagName()) {
                                 case "NomArq":
                                     //ToDo
-                                    //Ler o arquivo e fazer os métodos validando cada campo
-                                    //Necessário dados pegos de um banco de dados.
+                                    //Ler o arquivo e fazer os mÃ©todos validando cada campo                                 
                                     if (elCabFilho.getTextContent().isEmpty()) {
                                         erros.add(EnumCodigoErro.EGEN0043);
                                         arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
@@ -3990,6 +4080,9 @@ public class geradorArquivo extends JFrame {
                                                                     break;
                                                                 case "VlrPgto":
                                                                     nPontoVenda.setVlrPgto(Double.parseDouble(elFilhoPontoVenda.getTextContent()));
+                                                                    if (nPontoVenda.getCodigoErroVlrPgto() != null) {
+                                                                        erros.add(nPontoVenda.getCodigoErroVlrPgto());
+                                                                    }
                                                                     break;
                                                                 case "NumCtrlCreddrPontoVendaActo":
                                                                     nPontoVenda.setNumCtrlCreddrPontoVendaActo(elFilhoPontoVenda.getTextContent());
@@ -4020,7 +4113,7 @@ public class geradorArquivo extends JFrame {
                                                     nCentralizadora.setPontosVenda(pontoVendas);
                                             }
                                             //ToDo
-                                            //Se não houver problemas no arquivo, informaçoes inconsistentes na centralizadora
+                                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes na centralizadora
                                             nCentralizadora.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                                         }
                                     }
@@ -4030,7 +4123,7 @@ public class geradorArquivo extends JFrame {
                                     }
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -4094,8 +4187,8 @@ public class geradorArquivo extends JFrame {
                             switch (elCabFilho.getTagName()) {
                                 case "NomArq":
                                     //ToDo
-                                    //Ler o arquivo e fazer os métodos validando cada campo
-                                    //Necessário dados pegos de um banco de dados.
+                                    //Ler o arquivo e fazer os mÃ©todos validando cada campo
+                                    //NecessÃ¡rio dados pegos de um banco de dados.
                                     if (elCabFilho.getTextContent().isEmpty()) {
                                         erros.add(EnumCodigoErro.EGEN0043);
                                         arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
@@ -4304,7 +4397,7 @@ public class geradorArquivo extends JFrame {
                                                     nCentralizadora.setPontosVenda(pontoVendas);
                                             }
                                             //ToDo
-                                            //Se não houver problemas no arquivo, informaçoes inconsistentes na centralizadora
+                                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes na centralizadora
                                             nCentralizadora.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                                         }
                                     }
@@ -4314,7 +4407,7 @@ public class geradorArquivo extends JFrame {
                                     }
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -4378,8 +4471,8 @@ public class geradorArquivo extends JFrame {
                             switch (elCabFilho.getTagName()) {
                                 case "NomArq":
                                     //ToDo
-                                    //Ler o arquivo e fazer os métodos validando cada campo
-                                    //Necessário dados pegos de um banco de dados.
+                                    //Ler o arquivo e fazer os mÃ©todos validando cada campo
+                                    //NecessÃ¡rio dados pegos de um banco de dados.
                                     if (elCabFilho.getTextContent().isEmpty()) {
                                         erros.add(EnumCodigoErro.EGEN0043);
                                         arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
@@ -4583,7 +4676,7 @@ public class geradorArquivo extends JFrame {
                                                     nCentralizadora.setPontosVenda(pontoVendas);
                                             }
                                             //ToDo
-                                            //Se não houver problemas no arquivo, informaçoes inconsistentes na centralizadora
+                                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes na centralizadora
                                             nCentralizadora.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                                         }
                                     }
@@ -4593,7 +4686,7 @@ public class geradorArquivo extends JFrame {
                                     }
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -4664,8 +4757,8 @@ public class geradorArquivo extends JFrame {
                                         }
                                     }
                                     //ToDo
-                                    //Ler o arquivo e fazer os métodos validando cada campo
-                                    //Necessário dados pegos de um banco de dados.
+                                    //Ler o arquivo e fazer os mÃ©todos validando cada campo
+                                    //NecessÃ¡rio dados pegos de um banco de dados.
                                     if (elCabFilho.getTextContent().isEmpty()) {
                                         erros.add(EnumCodigoErro.EGEN0043);
                                         arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
@@ -4835,7 +4928,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -4946,7 +5039,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.RECSDO);
                         }
                     }
@@ -5001,8 +5094,8 @@ public class geradorArquivo extends JFrame {
                                         }
                                     }
                                     //ToDo
-                                    //Ler o arquivo e fazer os métodos validando cada campo
-                                    //Necessário dados pegos de um banco de dados.
+                                    //Ler o arquivo e fazer os mÃ©todos validando cada campo
+                                    //NecessÃ¡rio dados pegos de um banco de dados.
                                     if (elCabFilho.getTextContent().isEmpty()) {
                                         erros.add(EnumCodigoErro.EGEN0043);
                                         arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
@@ -5173,7 +5266,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -5251,7 +5344,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.RECSDO);
                         }
                     }
@@ -5303,8 +5396,8 @@ public class geradorArquivo extends JFrame {
                                         }
                                     }
                                     //ToDo
-                                    //Ler o arquivo e fazer os métodos validando cada campo
-                                    //Necessário dados pegos de um banco de dados.
+                                    //Ler o arquivo e fazer os mÃ©todos validando cada campo
+                                    //NecessÃ¡rio dados pegos de um banco de dados.
                                     if (elCabFilho.getTextContent().isEmpty()) {
                                         erros.add(EnumCodigoErro.EGEN0043);
                                         arquivoret.setCodigoErroNomArq(EnumCodigoErro.EGEN0043);
@@ -5475,7 +5568,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -5553,7 +5646,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.RECSDO);
                         }
                     }
@@ -5673,7 +5766,7 @@ public class geradorArquivo extends JFrame {
                                     break;
                             }
                             //ToDo
-                            //Se não houver problemas no arquivo, informaçoes inconsistentes no credenciador
+                            //Se nÃ£o houver problemas no arquivo, informaÃ§oes inconsistentes no credenciador
                             cred.setEnumTipoRetornado(EnumTipoRetornado.ACTO);
                         }
                     }
@@ -5923,8 +6016,8 @@ public class geradorArquivo extends JFrame {
         return arquivoret;
     }// </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Gerar arquivo ASLC027/ASLC029/ASLC031 Credenciador --> SLC (CIP)">    
-    public static void gerarArquivoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
+    // <editor-fold defaultstate="collapsed" desc="[CREDENCIADOR]Gerar arquivo ASLC027/ASLC029/ASLC031 Credenciador --> SLC (CIP)">    
+    public void gerarArquivoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
         //Criar uma String no formato XML para o inicio da criacao do arquivo.        
         String xmlHeader;
         xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
@@ -6148,7 +6241,37 @@ public class geradorArquivo extends JFrame {
         TransformerFactory transFactory = TransformerFactory.newInstance();
         Transformer transformer = transFactory.newTransformer();
         transformer.transform(source, result);
+
+        Auxiliar a = new Auxiliar();
+        a.compactarParaGZip("D:/xml/" + "ASLC" + tipo + "_" + cdr.getCNPJBaseCreddr()
+                + "_" + data + "_" + sequencia + ".xml", "D:/xml/" + "ASLC" + tipo + "_" + cdr.getCNPJBaseCreddr()
+                + "_" + data + "_" + sequencia + ".xml.gz");
+        String fileName = "D:/xml/" + "ASLC" + tipo + "_" + cdr.getCNPJBaseCreddr()
+                + "_" + data + "_" + sequencia + ".xml.gz";
+        //File file = new File(fileName);
+        //aux.encrypt(file, file);
+        criptografarArquivo(tipo, cdr, sequencia);
+        JOptionPane.showMessageDialog(this, "Arquivo gerado com Sucesso\n" + fileName);
     }// </editor-fold>
+
+    public void criptografarArquivo(String tipo, Credenciador cdr, String sequencia) throws Exception, IOException {
+
+        String fileName = "D:/xml/" + "ASLC" + tipo + "_" + cdr.getCNPJBaseCreddr()
+                + "_" + data + "_" + sequencia + ".xml.gz";
+        File file = new File(fileName);
+        try {
+            CriptografiaAssimetrica ca = new CriptografiaAssimetrica();
+            PrivateKey privateKey = ca.getPrivate("D:\\xml\\privateKey");
+            
+            CriptografiaAES aES = new CriptografiaAES();
+            aES.criptografarRSAcomAES(privateKey, fileName);
+            
+            //ca.encryptFile(ca.getFileInBytes(new File(fileName)), file, privateKey);
+            //ca.encryptFile(ca.getFileInBytes(new File(fileName)), file, privateKey);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="[DOMICILIO] Gerar arquivo ASLC023/ASLC025/ASLC033 do Domicilio para SLC (CIP)">
     public static void gerarArquivoRetornoProcessamentoXML(Arquivo arq, String tipo, String sequencia, List<EnumCodigoErro> erros) throws IOException, Exception {
@@ -6245,6 +6368,45 @@ public class geradorArquivo extends JFrame {
         transformer.transform(source, result);
     }// </editor-fold>
 
+    public static void gerarTesteConexaoAGEN(Arquivo arq) throws IOException, Exception {
+        //Criar uma String no formato XML para o inicio da criacao do arquivo.        
+        String xmlHeader;
+        xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
+        xmlHeader += "\n<ASLCDOC xmlns=\"http://www.cip-bancos.org.br/ARQ/AGEN001.xsd\">";
+        xmlHeader += "\n</ASLCDOC>\n";
+
+        ByteArrayInputStream xml = new ByteArrayInputStream(new String(xmlHeader.getBytes(), "UTF-8").getBytes());
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+        Document doc = docBuilder.parse(xml);
+        //Pega a rais da arvore do XML.
+        Element rootNode = doc.getDocumentElement();
+        //Cria e adiciona a rais do XML.
+
+        Element agen = doc.createElement("AGEN001");
+
+        Element ISPBEmissor = doc.createElement("ISPBEmissor");
+        ISPBEmissor.setTextContent(arq.getISPBEmissor());
+        agen.appendChild(ISPBEmissor);
+
+        Element ISPBDestinatario = doc.createElement("ISPBDestinatario");
+        ISPBDestinatario.setTextContent(arq.getISPBDestinatario());
+        agen.appendChild(ISPBDestinatario);
+
+        Element msgECO = doc.createElement("MsgECO");
+        msgECO.setTextContent(arq.getMsgECO());
+        agen.appendChild(msgECO);
+
+        rootNode.appendChild(agen);
+
+        //Salva o documento XML no diretorio passando o parametro.			
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new FileOutputStream("D:/xml/" + "AGEN001.xml"));
+        TransformerFactory transFactory = TransformerFactory.newInstance();
+        Transformer transformer = transFactory.newTransformer();
+        transformer.transform(source, result);
+    }
+
     private static List<Centralizadora> gerarDadosCentralizadoras() {
         List<Centralizadora> centralizadoras = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -6337,7 +6499,7 @@ public class geradorArquivo extends JFrame {
                 p.setTpProdLiquidCarts("01");
                 p.setTpProdLiquidDeb("01");
                 p.setIndrFormaTransf("3");
-                //Código para BRL
+                //CÃ³digo para BRL
                 p.setCodMoeda("790");
                 p.setDtPgto(data);
                 p.setVlrPgto(value * (double) k);
@@ -6357,12 +6519,14 @@ public class geradorArquivo extends JFrame {
         a.setId(1);
         a.setNomArq(nome);
         a.setNumCtrlEmis("04678811635783265280");
-        a.setISPBEmissor("23472897");
-        //Destinatario deve ser enviado sempre 29011780
+        //BASE CNPJ WIDE PAY
+        a.setISPBEmissor("25063833");
+        //Destinatario deve ser enviado sempre 29011780 BASE CNPJ CIP
         a.setISPBDestinatario("29011780");
         a.setDtHrArq(dataref + "T" + hora);
         a.setDtRef(dataref);
         a.setServicosEventos(tipo);
+        a.setMsgECO("TESTE DE CONEXAO COM A CIP");
         return a;
     }
 
@@ -6378,7 +6542,7 @@ public class geradorArquivo extends JFrame {
             texto = texto + ("Descricao Erro --->" + retornoXML.getCodigoErroNomArq().getDescricao() + "\n");
         }
         if (retornoXML.getSitCons() != null) {
-            texto = texto + ("SituacÃ£o Consulta --->" + retornoXML.getSitCons() + "\n");
+            texto = texto + ("SituacÃƒÂ£o Consulta --->" + retornoXML.getSitCons() + "\n");
         }
         if (retornoXML.getCodigoErroSitCons() != null) {
             texto = texto + ("Cod Erro --->" + retornoXML.getCodigoErroSitCons() + "\n");
