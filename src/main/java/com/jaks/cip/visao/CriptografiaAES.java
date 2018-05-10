@@ -32,27 +32,27 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class CriptografiaAES {
 
-    static SecureRandom srandom = new SecureRandom();
+    static SecureRandom secureRandom = new SecureRandom();
 
-    static private void processFile(Cipher ci, InputStream in, OutputStream out) throws IllegalBlockSizeException, BadPaddingException, IOException {
+   private void processarArquivo(Cipher cipher, InputStream in, OutputStream out) throws IllegalBlockSizeException, BadPaddingException, IOException {
         byte[] ibuf = new byte[1024];
         int len;
         while ((len = in.read(ibuf)) != -1) {
-            byte[] obuf = ci.update(ibuf, 0, len);
+            byte[] obuf = cipher.update(ibuf, 0, len);
             if (obuf != null) {
                 out.write(obuf);
             }
         }
-        byte[] obuf = ci.doFinal();
+        byte[] obuf = cipher.doFinal();
         if (obuf != null) {
             out.write(obuf);
         }
     }
 
-    static private void processFile(Cipher ci, String inFile, String outFile) throws IllegalBlockSizeException, BadPaddingException, IOException {
+    private void processarArquivo(Cipher ci, String inFile, String outFile) throws IllegalBlockSizeException, BadPaddingException, IOException {
         try (FileInputStream in = new FileInputStream(inFile);
                 FileOutputStream out = new FileOutputStream(outFile)) {
-            processFile(ci, in, out);
+            processarArquivo(ci, in, out);
         }
     }
 
@@ -63,14 +63,14 @@ public class CriptografiaAES {
         String inputFile = file;
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, pvt);
-        processFile(cipher, inputFile, inputFile + ".spb");
+        processarArquivo(cipher, inputFile, inputFile + ".spb");
     }
 
     public void descriptografar(PublicKey pubKey, String file) throws NoSuchAlgorithmException, InvalidKeySpecException,
             NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, IOException {
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, pubKey);
-        processFile(cipher, file, file + ".dec");
+        processarArquivo(cipher, file, file + ".dec");
     }
 
     public void criptografarRSAcomAES(PrivateKey pvt, String file) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException,
@@ -82,7 +82,7 @@ public class CriptografiaAES {
         SecretKey skey = kgen.generateKey();
 
         byte[] iv = new byte[128 / 8];
-        srandom.nextBytes(iv);
+        secureRandom.nextBytes(iv);
         IvParameterSpec ivspec = new IvParameterSpec(iv);
 
         try (FileOutputStream out = new FileOutputStream(file + ".spb")) {
@@ -98,7 +98,7 @@ public class CriptografiaAES {
             Cipher ci = Cipher.getInstance("AES/CBC/PKCS5Padding");
             ci.init(Cipher.ENCRYPT_MODE, skey, ivspec);
             try (FileInputStream in = new FileInputStream(file)) {
-                processFile(ci, in, out);
+                processarArquivo(ci, in, out);
             }
         }
     }
@@ -125,7 +125,7 @@ public class CriptografiaAES {
             ci.init(Cipher.DECRYPT_MODE, skey, ivspec);
 
             try (FileOutputStream out = new FileOutputStream(file + ".dec")) {
-                processFile(ci, in, out);
+                processarArquivo(ci, in, out);
             }
         }
     }
